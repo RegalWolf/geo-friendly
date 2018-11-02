@@ -1,26 +1,32 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+
+import Navigation from './components/Navigation/Navigation';
+// import Navigation from './components/Navigation/Nav';
+// import Navigation from './components/Navigation/NavBar';
+import Auth from './components/Auth/Auth';
+
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
+});
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Router>
+        <MuiThemeProvider theme={theme}>
+          <React.Fragment>
+            <Switch>
+              <Route path='/login' exact component={Auth} />
+              <Route path='/' component={Navigation} />
+            </Switch>
+          </React.Fragment>
+        </MuiThemeProvider>
+      </Router>
     );
   }
 }
