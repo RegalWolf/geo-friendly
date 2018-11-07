@@ -29,8 +29,9 @@ import Home from './../Home/Home';
 import Islands from './../Islands/Islands';
 import Racks from './../Racks/Racks';
 import Drawers from './../Drawers/Drawers';
+import Families from './../Families/Families';
 import Acquisitions from './../Acquisitions/Acquisitions';
-import User from './../User/User';
+import Users from './../Users/Users';
 import Maps from './../Maps/Maps';
 import Classifications from './../Classifications/Classifications';
 import Types from './../Types/Types';
@@ -109,7 +110,6 @@ class PersistentDrawerLeft extends React.Component {
     datas: [
       'users',
       'collections',
-      'authoritys',
       'classifications',
       'families',
       'ages',
@@ -260,11 +260,12 @@ class PersistentDrawerLeft extends React.Component {
               <Route path='/islands' exact component={Islands} />
               <Route path='/racks' exact component={Racks} />
               <Route path='/drawers' exact component={Drawers} />
+              <Route path='/families' exact component={Families} />
               <Route path='/classifications' exact component={Classifications} />
               <Route path='/scales' exact component={Scales} />
               <Route path='/ages' exact component={Ages} />
               <Route path='/maps' exact component={Maps} />
-              <Route path='/users' exact component={User} />
+              <Route path='/users' exact component={Users} />
               <Route path='/collections' exact component={Collection} />
               <Route path='/' exact component={Home} />
             </Switch>

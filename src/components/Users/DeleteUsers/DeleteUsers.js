@@ -10,7 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import Spinner from '../../Spinner/Spinner';
 
-const updateDrawersAlert = props => (
+const deleteUsers = props => (
   <Dialog
     open={props.open}
     onClose={props.onToggleAlert}
@@ -18,20 +18,23 @@ const updateDrawersAlert = props => (
     aria-describedby="alert-dialog-description"
   >
     <div style={{position: 'relative'}}>
-      <DialogTitle id="alert-dialog-title">Update the Data?</DialogTitle>
+      <DialogTitle id="alert-dialog-title">Delete the Data?</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          If you update the data, then data will update on Databases.
+          If you delete the data, then data will save in your Databases.
         </DialogContentText>
       </DialogContent>
+
       <DialogActions>
         <Button onClick={props.onToggleAlert} color="primary">
           Cancel
         </Button>
-        <Button onClick={props.updated} color="primary" autoFocus>
-          Update
+        
+        <Button onClick={props.deleted} color="primary" autoFocus>
+          Delete
         </Button>
       </DialogActions>
+
       {props.loading ? <Spinner /> : null}
     </div>
   </Dialog>
@@ -39,8 +42,8 @@ const updateDrawersAlert = props => (
 
 const mapStateToProps = state => {
   return {
-    loading: state.drawersReducer.loading
+    loading: state.usersReducer.loading
   };
 };
 
-export default connect(mapStateToProps)(updateDrawersAlert);
+export default connect(mapStateToProps)(deleteUsers);

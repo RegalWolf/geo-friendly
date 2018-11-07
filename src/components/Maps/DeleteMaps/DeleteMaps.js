@@ -42,7 +42,7 @@ const deleteMaps = props => (
 
 const mapStateToProps = state => {
   return {
-    loading: state.agesReducer.loading
+    loading: state.mapsReducer.loading
   };
 };
 

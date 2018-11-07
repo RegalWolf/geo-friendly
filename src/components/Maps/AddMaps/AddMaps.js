@@ -2,7 +2,7 @@ import React from 'react';
 
 import { 
   Typography, Button, TextField, Tooltip, Paper, IconButton,
-  FormControl, FormHelperText
+  FormControl, FormHelperText, Select, MenuItem
 } from '@material-ui/core';
 
 import CloseItem from '@material-ui/icons/Close';
@@ -22,6 +22,22 @@ const addMaps = props => (
     <div style={styles.contentBody}>
       <FormControl error style={styles.textFieldName}>
         <TextField
+          id="code"
+          label="code"
+          value={props.input.code}
+          onChange={props.changed('code')}
+          margin="normal"
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        {props.inputMessage.code 
+          ? <FormHelperText>{props.inputMessage.code}</FormHelperText>
+          : null
+        }
+      </FormControl>
+      <FormControl error style={styles.textFieldName}>
+        <TextField
           id="name"
           label="name"
           value={props.input.name}
@@ -36,19 +52,54 @@ const addMaps = props => (
           : null
         }
       </FormControl>
-      <FormControl error style={styles.textFieldDescription}>
-        <TextField
-          id="description"
-          label="Description"
-          value={props.input.description}
-          onChange={props.changed('description')}
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        {props.inputMessage.description 
-          ? <FormHelperText>{props.inputMessage.description}</FormHelperText>
+      <FormControl style={styles.textFieldReference}>
+        <Typography variant='caption'>Islands Id</Typography>
+        <Select
+          value={props.input.island_id}
+          onChange={props.changed('island_id')}
+          displayEmpty
+          name='island_id'
+        >
+          {props.islands.map(island => (
+            <MenuItem key={island.id} value={island.id}>{island.name}</MenuItem>
+          ))}
+        </Select>
+        {props.inputMessage.island_id 
+          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.inputMessage.island_id}</FormHelperText>
+          : null
+        }
+      </FormControl>
+      <FormControl style={styles.textFieldReference}>
+        <Typography variant='caption'>Scales Id</Typography>
+        <Select
+          value={props.input.scale_id}
+          onChange={props.changed('scale_id')}
+          displayEmpty
+          name='scale_id'
+        >
+          {props.scales.map(sacale => (
+            <MenuItem key={sacale.id} value={sacale.id}>{sacale.name}</MenuItem>
+          ))}
+        </Select>
+        {props.inputMessage.scale_id 
+          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.inputMessage.scale_id}</FormHelperText>
+          : null
+        }
+      </FormControl>
+      <FormControl style={styles.textFieldReference}>
+        <Typography variant='caption'>Types Id</Typography>
+        <Select
+          value={props.input.type_id}
+          onChange={props.changed('type_id')}
+          displayEmpty
+          name='type_id'
+        >
+          {props.types.map(type => (
+            <MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>
+          ))}
+        </Select>
+        {props.inputMessage.type_id 
+          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.inputMessage.type_id}</FormHelperText>
           : null
         }
       </FormControl>
@@ -85,11 +136,12 @@ const styles = {
     textAlign: 'right'
   },
   textFieldName: {
-    width: '25%'
+    width: '19%'
   },
-  textFieldDescription: {
-    width: '74%'
-  }
+  textFieldReference: {
+    width: '19%',
+    paddingTop: '.84rem'
+  },
 };
 
 export default addMaps;

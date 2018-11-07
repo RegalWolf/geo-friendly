@@ -2,16 +2,16 @@ import React from 'react';
 
 import { 
   Typography, Button, TextField, Tooltip, Paper, IconButton,
-  FormControl, FormHelperText
+  FormControl, FormHelperText, Select, MenuItem
 } from '@material-ui/core';
 
 import CloseItem from '@material-ui/icons/Close';
 
-const addClassifications = props => (
+const addFamilies = props => (
   <Paper style={styles.container}>
     <div style={styles.contentHeader}>
       <Typography variant='h6'>
-        Add Classifications
+        Add Families
       </Typography>
       <Tooltip title='close' onClick={props.closeAddHandler}>
         <IconButton aria-label='close'>
@@ -20,7 +20,7 @@ const addClassifications = props => (
       </Tooltip>
     </div>
     <div style={styles.contentBody}>
-      <FormControl error style={styles.textFieldName}>
+      <FormControl error style={styles.textField}>
         <TextField
           id="id"
           label="id"
@@ -36,7 +36,7 @@ const addClassifications = props => (
           : null
         }
       </FormControl>
-      <FormControl error style={styles.textFieldName}>
+      <FormControl error style={styles.textField}>
         <TextField
           id="name"
           label="name"
@@ -49,6 +49,23 @@ const addClassifications = props => (
         />
         {props.inputMessage.name 
           ? <FormHelperText>{props.inputMessage.name}</FormHelperText>
+          : null
+        }
+      </FormControl>
+      <FormControl style={styles.textFieldClassificationId}>
+        <Typography variant='caption'>Classifications Id</Typography>
+        <Select
+          value={props.input.classification_id}
+          onChange={props.changed('classification_id')}
+          displayEmpty
+          name='classification_id'
+        >
+          {props.classifications.map(classification => (
+            <MenuItem key={classification.id} value={classification.id}>{classification.name}</MenuItem>
+          ))}
+        </Select>
+        {props.inputMessage.classification_id 
+          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.inputMessage.classification_id}</FormHelperText>
           : null
         }
       </FormControl>
@@ -94,18 +111,22 @@ const styles = {
   contentBody: {
     padding: '.75rem 1.5rem',
     display: 'flex',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   contentNavigation: {
     padding: '.75rem 1.5rem',
     textAlign: 'right'
   },
-  textFieldName: {
-    width: '20%'
+  textField: {
+    width: '20%',
+  },
+  textFieldClassificationId: {
+    width: '20%',
+    paddingTop: '.84rem'
   },
   textFieldDescription: {
-    width: '58%'
+    width: '37%'
   }
 };
 
-export default addClassifications;
+export default addFamilies;

@@ -16,18 +16,18 @@ import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import * as actions from '../../store/actions/index';
-import AddMaps from './AddMaps/AddMaps';
-import AddMapsAlert from './AddMaps/AddMapsAlert';
-import AddMapsMessage from './AddMaps/AddMapsMessage';
-import UpdateMaps from './UpdateMaps/UpdateMaps';
-import UpdateMapsAlert from './UpdateMaps/UpdateMapsAlert';
-import UpdateMapsMessage from './UpdateMaps/UpdateMapsMessage';
-import DeleteMaps from './DeleteMaps/DeleteMaps';
-import DeleteMapsMessage from './DeleteMaps/DeleteMapsMessage';
+import AddCollections from './AddCollections/AddCollections';
+import AddCollectionsAlert from './AddCollections/AddCollectionsAlert';
+import AddCollectionsMessage from './AddCollections/AddCollectionsMessage';
+import UpdateCollections from './UpdateCollections/UpdateCollections';
+import UpdateCollectionsAlert from './UpdateCollections/UpdateCollectionsAlert';
+import UpdateCollectionsMessage from './UpdateCollections/UpdateCollectionsMessage';
+import DeleteCollections from './DeleteCollections/DeleteCollections';
+import DeleteCollectionsMessage from './DeleteCollections/DeleteCollectionsMessage';
 import Spinner from '../Spinner/Spinner';
 
-function createData(id, code, name, island_id, scale_id, type_id, created_at, updated_at) {
-  return { id, code, name, island_id, scale_id, type_id, created_at, updated_at };
+function createData(id, name, rack_id, description) {
+  return { id, name, rack_id, description };
 }
 
 function desc(a, b, orderBy) {
@@ -56,13 +56,9 @@ function getSorting(order, orderBy) {
 
 const rows = [
   { id: 'id', numeric: false, disablePadding: true, label: 'Id' },
-  { id: 'code', numeric: false, disablePadding: false, label: 'Code' },
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-  { id: 'island_id', numeric: false, disablePadding: false, label: 'Island Id' },
-  { id: 'scale_id', numeric: false, disablePadding: false, label: 'Scale Id' },
-  { id: 'type_id', numeric: false, disablePadding: false, label: 'Type Id' },
-  { id: 'created_at', numeric: false, disablePadding: false, label: 'Created At' },
-  { id: 'updated_at', numeric: false, disablePadding: false, label: 'Updated At' },
+  { id: 'rack_id', numeric: false, disablePadding: false, label: 'Racks Id' },
+  { id: 'description', numeric: false, disablePadding: false, label: 'Description' }
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -164,7 +160,7 @@ let EnhancedTableToolbar = props => {
           </Typography>
         ) : (
           <Typography id="tableTitle" variant='h6'>
-            Maps Table
+            Collections Table
           </Typography>
         )}
       </div>
@@ -229,16 +225,19 @@ const styles = theme => ({
   },
 });
 
-class Maps extends React.Component {
+class Collections extends React.Component {
   state = {
     order: 'asc',
     orderBy: 'id',
     selected: [],
     data: [],
+    collections: [],
+    ages: [],
+    families: [],
+    drawers: [],
     maps: [],
-    types: [],
-    scales: [],
-    islands: [],
+    acquisitions: [],
+    users: [],
     add: {
       open: false,
       openAlert: false,
@@ -250,16 +249,26 @@ class Maps extends React.Component {
       input: {
         code: '',
         name: '',
-        island_id: '',
-        scale_id: '',
-        type_id: ''
+        inventory: '',
+        registration: '',
+        age_id: '',
+        family_id: '',
+        drawer_id: '',
+        map_id: '',
+        acquisition_id: '',
+        user_id: ''
       },
       inputMessage: {
         code: '',
         name: '',
-        island_id: '',
-        scale_id: '',
-        type_id: ''
+        inventory: '',
+        registration: '',
+        age_id: '',
+        family_id: '',
+        drawer_id: '',
+        map_id: '',
+        acquisition_id: '',
+        user_id: ''
       }
     },
     update: {
@@ -273,16 +282,26 @@ class Maps extends React.Component {
       input: {
         code: '',
         name: '',
-        island_id: '',
-        scale_id: '',
-        type_id: ''
+        inventory: '',
+        registration: '',
+        age_id: '',
+        family_id: '',
+        drawer_id: '',
+        map_id: '',
+        acquisition_id: '',
+        user_id: ''
       },
       inputMessage: {
         code: '',
         name: '',
-        island_id: '',
-        scale_id: '',
-        type_id: ''
+        inventory: '',
+        registration: '',
+        age_id: '',
+        family_id: '',
+        drawer_id: '',
+        map_id: '',
+        acquisition_id: '',
+        user_id: ''
       }
     },
     delete: {
@@ -299,48 +318,66 @@ class Maps extends React.Component {
     loading: false
   };
 
-  componentDidMount() {
-    this.props.onFetch(this.state.token);
-    this.props.onFetchTypes(this.state.token);
-    this.props.onFetchScales(this.state.token);
-    this.props.onFetchIslands(this.state.token);
+  async componentDidMount() {
+    await this.props.onFetch(this.state.token);
+    this.props.onFetchFamilies(this.state.token);
+    this.props.onFetchAcquisitions(this.state.token);
+    this.props.onFetchMaps(this.state.token);
+    this.props.onFetchAges(this.state.token);
+    this.props.onFetchUsers(this.state.token);
+    this.props.onFetchDrawers(this.state.token);
   }
 
   componentDidUpdate() {
-    if (this.state.maps !== this.props.maps) {
+    if (this.state.collections !== this.props.collections) {
       this.setState({
         data: [],
-        maps: this.props.maps,
+        collections: this.props.collections,
         loading: this.props.loading
       });
-      this.props.maps.map(map => (
+      this.props.collections.map(collection => (
         this.setState(prevState => ({
           data: [
             ...prevState.data,
-            createData(map.id, map.code, map.name, map.island_id, map.scale_id, map.type_id, map.created_at, map.updated_at)
+            createData(collection.id, collection.name, collection.rack_id, collection.description)
           ]
         }))
       ));
     }
 
-    if (this.state.types !== this.props.types) {
+    if (this.state.families !== this.props.families) {
       this.setState({
-        types: this.props.types,
-        loading: this.props.loading
+        families: this.props.families,
       });
     }
 
-    if (this.state.scales !== this.props.scales) {
+    if (this.state.ages !== this.props.ages) {
       this.setState({
-        scales: this.props.scales,
-        loading: this.props.loading
+        ages: this.props.ages,
       });
     }
 
-    if (this.state.islands !== this.props.islands) {
+    if (this.state.drawers !== this.props.drawers) {
       this.setState({
-        islands: this.props.islands,
-        loading: this.props.loading
+        drawers: this.props.drawers,
+      });
+    }
+
+    if (this.state.maps !== this.props.maps) {
+      this.setState({
+        maps: this.props.maps,
+      });
+    }
+
+    if (this.state.acquisitions !== this.props.acquisitions) {
+      this.setState({
+        acquisitions: this.props.acquisitions,
+      });
+    }
+
+    if (this.state.users !== this.props.users) {
+      this.setState({
+        users: this.props.users,
       });
     }
   }
@@ -403,9 +440,7 @@ class Maps extends React.Component {
 
   refreshHandler = () => {
     this.props.onFetch(this.state.token);
-    this.props.onFetchScales(this.state.token);
-    this.props.onFetchTypes(this.state.token);
-    this.props.onFetchIslands(this.state.token);
+    this.props.onFetchRacks(this.state.token);
   }
 
   // ------------------- Add Function ---------------------
@@ -447,56 +482,42 @@ class Maps extends React.Component {
       add: {
         ...prevState.add,
         input: {
-          code: '',
           name: '',
-          island_id: '',
-          scale_id: '',
-          type_id: ''
+          rack_id: '',
+          description: ''
         }
       }
     }));
   }
 
   addValidationHandler = () => {
-    let code = '';
     let name = '';
-    let island_id = '';
-    let scale_id = '';
-    let type_id = '';
+    let rack_id = '';
+    let description = '';
 
-    if (!this.state.add.input.code) {
-      code = 'code is required';
-    } else if (this.state.add.input.code.length < 4) {
-      code = 'The code must be at least 4 characters';
-    }
-    
     if (!this.state.add.input.name) {
       name = 'name is required';
     } else if (this.state.add.input.name.length < 4) {
       name = 'The name must be at least 4 characters';
     }
 
-    if (!this.state.add.input.island_id) {
-      island_id = 'island id is required';
+    if (!this.state.add.input.rack_id) {
+      rack_id = 'racks id is required';
     }
-
-    if (!this.state.add.input.scale_id) {
-      scale_id = 'scale id is required';
-    }
-
-    if (!this.state.add.input.type_id) {
-      type_id = 'type id is required';
+    
+    if (!this.state.add.input.description) {
+      description = 'description is required';
+    } else if (this.state.add.input.description.length < 4) {
+      description = 'The description must be at least 4 characters';
     }
 
     this.setState(prevState => ({
       add: {
         ...prevState.add,
         inputMessage: {
-          code,
           name,
-          island_id,
-          scale_id,
-          type_id
+          rack_id,
+          description
         }
       }
     }));
@@ -505,7 +526,9 @@ class Maps extends React.Component {
   toggleAddAlertHandler = async () => {
     await this.addValidationHandler();
 
-    if ((!this.state.add.inputMessage.name) && (!this.state.add.inputMessage.description)) {
+    if ((!this.state.add.inputMessage.name) 
+      && (!this.state.add.inputMessage.description) 
+      && (!this.state.add.inputMessage.rack_id)) {
       this.setState(prevState => ({
         add: {
           ...prevState.add,
@@ -551,8 +574,8 @@ class Maps extends React.Component {
   // ------------------- Update Function ---------------------
 
   openUpdateHandler = () => {
-    const input = this.state.maps.filter(map => (
-      map.id === this.state.selected[0]
+    const input = this.state.drawers.filter(drawer => (
+      drawer.id === this.state.selected[0]
     ));
 
     this.setState(prevState => ({
@@ -560,11 +583,9 @@ class Maps extends React.Component {
         ...prevState.update,
         open: true,
         input: {
-          code: input[0].code,
           name: input[0].name,
-          island_id: input[0].island_id,
-          scale_id: input[0].scale_id,
-          type_id: input[0].type_id,
+          rack_id: input[0].rack_id,
+          description: input[0].description
         }
       }
     }));
@@ -584,11 +605,9 @@ class Maps extends React.Component {
       update: {
         ...prevState.update,
         input: {
-          code: '',
           name: '',
-          island_id: '',
-          scale_id: '',
-          type_id: ''
+          rack_id: '',
+          description: ''
         }
       }
     }));
@@ -610,45 +629,33 @@ class Maps extends React.Component {
   }
 
   updateValidationHandler = () => {
-    let code = '';
     let name = '';
-    let island_id = '';
-    let scale_id = '';
-    let type_id = '';
+    let rack_id = '';
+    let description = '';
 
-    if (!this.state.update.input.code) {
-      code = 'code is required';
-    } else if (this.state.update.input.code.length < 4) {
-      code = 'The code must be at least 4 characters';
-    }
-    
     if (!this.state.update.input.name) {
       name = 'name is required';
     } else if (this.state.update.input.name.length < 4) {
       name = 'The name must be at least 4 characters';
     }
 
-    if (!this.state.update.input.island_id) {
-      island_id = 'island id is required';
+    if (!this.state.update.input.rack_id) {
+      rack_id = 'rack id is required';
     }
-
-    if (!this.state.update.input.scale_id) {
-      scale_id = 'scale id is required';
-    }
-
-    if (!this.state.update.input.type_id) {
-      type_id = 'type id is required';
+    
+    if (!this.state.update.input.description) {
+      description = 'description is required';
+    } else if (this.state.update.input.description.length < 4) {
+      description = 'The description must be at least 4 characters';
     }
 
     this.setState(prevState => ({
       update: {
         ...prevState.update,
         inputMessage: {
-          code,
           name,
-          island_id,
-          scale_id,
-          type_id
+          rack_id,
+          description
         }
       }
     }));
@@ -657,7 +664,9 @@ class Maps extends React.Component {
   toggleUpdateAlertHandler = async () => {
     await this.updateValidationHandler();
 
-    if ((!this.state.update.inputMessage.name) && (!this.state.update.inputMessage.description)) {
+    if ((!this.state.update.inputMessage.name) 
+      && (!this.state.update.inputMessage.rack_id)
+      && (!this.state.update.inputMessage.description)) {
       this.setState(prevState => ({
         update: {
           ...prevState.update,
@@ -755,7 +764,7 @@ class Maps extends React.Component {
     return (
       <React.Fragment>
         {this.state.add.message.open
-          ? <AddMapsMessage 
+          ? <AddCollectionsMessage 
               closed={this.toggleMessageAddHandler} 
               message={this.state.add.message.text}
               status={this.state.add.message.status}
@@ -764,26 +773,24 @@ class Maps extends React.Component {
         }
 
         {this.state.add.open 
-          ? <AddMaps 
+          ? <AddCollections 
               closeAddHandler={this.closeAddHandler}
               input={this.state.add.input}
               inputMessage={this.state.add.inputMessage}
               changed={this.inputAddHandler} 
               onToggleAlert={this.toggleAddAlertHandler}
-              types={this.state.types}
-              scales={this.state.scales}
-              islands={this.state.islands}
+              racks={this.state.racks}
             /> 
           : null
         }
 
-        <AddMapsAlert
+        <AddCollectionsAlert
           open={this.state.add.openAlert}
           onToggleAlert={this.toggleAddAlertHandler}
           added={this.saveAddHandler} />
 
         {this.state.update.message.open
-          ? <UpdateMapsMessage 
+          ? <UpdateCollectionsMessage 
               closed={this.toggleMessageUpdateHandler} 
               message={this.state.update.message.text}
               status={this.state.update.message.status}
@@ -792,26 +799,24 @@ class Maps extends React.Component {
         }
 
         {this.state.update.open 
-          ? <UpdateMaps 
+          ? <UpdateCollections 
               closed={this.closeUpdateHandler}
               input={this.state.update.input}
               inputMessage={this.state.update.inputMessage}
               changed={this.inputUpdateHandler} 
               onToggleAlert={this.toggleUpdateAlertHandler}
-              types={this.state.types}
-              scales={this.state.scales}
-              islands={this.state.islands}
+              racks={this.state.racks}
             /> 
           : null
         }
 
-        <UpdateMapsAlert
+        <UpdateCollectionsAlert
           open={this.state.update.openAlert}
           onToggleAlert={this.toggleUpdateAlertHandler}
           updated={this.saveUpdateHandler} />
 
         {this.state.delete.message.open
-          ? <DeleteMapsMessage 
+          ? <DeleteCollectionsMessage 
               closed={this.toggleMessageDeleteHandler} 
               message={this.state.delete.message.text}
               status={this.state.delete.message.status}
@@ -819,7 +824,7 @@ class Maps extends React.Component {
           : null
         }
 
-        <DeleteMaps 
+        <DeleteCollections 
           open={this.state.delete.open}
           onToggleAlert={this.toggleDeleteAlertHandler}
           deleted={this.deleteHandler} />
@@ -870,31 +875,15 @@ class Maps extends React.Component {
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="default">
-                          {n.code}
-                        </TableCell>
-
-                        <TableCell component="th" scope="row" padding="default">
                           {n.name}
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="default">
-                          {n.island_id}
+                          {n.rack_id}
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="default">
-                          {n.scale_id}
-                        </TableCell>
-
-                        <TableCell component="th" scope="row" padding="default">
-                          {n.type_id}
-                        </TableCell>
-
-                        <TableCell component="th" scope="row" padding="default">
-                          {n.created_at}
-                        </TableCell>
-
-                        <TableCell component="th" scope="row" padding="default">
-                          {n.updated_at}
+                          {n.description}
                         </TableCell>
                       </TableRow>
                     );
@@ -928,33 +917,39 @@ class Maps extends React.Component {
   }
 }
 
-Maps.propTypes = {
+Collections.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => {
   return {
+    collections: state.collectionsReducer.collections,
+    ages: state.agesReducer.ages,
     maps: state.mapsReducer.maps,
-    types: state.typesReducer.types,
-    scales: state.scalesReducer.scales,
-    islands: state.islandsReducer.islands,
-    add: state.mapsReducer.add,
-    update: state.mapsReducer.update,
-    delete: state.mapsReducer.delete,
-    loading: state.mapsReducer.loading
+    families: state.familiesReducer.families,
+    users: state.usersReducer.users,
+    acquisitions: state.acquisitionsReducer.acquisitions,
+    drawers: state.drawersReducer.drawers,
+    add: state.collectionsReducer.add,
+    update: state.collectionsReducer.update,
+    delete: state.collectionsReducer.delete,
+    loading: state.collectionsReducer.loading
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetch: token => dispatch(actions.fetchMaps(token)),
-    onFetchTypes: token => dispatch(actions.fetchTypes(token)),
-    onFetchScales: token => dispatch(actions.fetchScales(token)),
-    onFetchIslands: token => dispatch(actions.fetchIslands(token)),
-    onPost: (maps, token) => dispatch(actions.postMaps(maps, token)),
-    onDelete: (id, token) => dispatch(actions.deleteMaps(id, token)),
-    onUpdate: (id, token, maps) => dispatch(actions.updateMaps(id, token, maps))
+    onFetch: token => dispatch(actions.fetchCollections(token)),
+    onFetchAges: token => dispatch(actions.fetchAges(token)),
+    onFetchFamilies: token => dispatch(actions.fetchFamilies(token)),
+    onFetchDrawers: token => dispatch(actions.fetchDrawers(token)),
+    onFetchMaps: token => dispatch(actions.fetchMaps(token)),
+    onFetchAcquisitions: token => dispatch(actions.fetchAcquisitions(token)),
+    onFetchUsers: token => dispatch(actions.fetchUsers(token)),
+    onPost: (drawer, token) => dispatch(actions.postCollections(drawer, token)),
+    onDelete: (id, token) => dispatch(actions.deleteCollections(id, token)),
+    onUpdate: (id, token, drawer) => dispatch(actions.updateCollections(id, token, drawer))
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Maps));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Collections));

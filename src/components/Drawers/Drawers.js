@@ -572,9 +572,7 @@ class Drawers extends React.Component {
     }
 
     if (!this.state.update.input.rack_id) {
-      rack_id = 'rack_id is required';
-    } else if (this.state.update.input.rack_id.length < 4) {
-      rack_id = 'The rack_id must be at least 4 characters';
+      rack_id = 'rack id is required';
     }
     
     if (!this.state.update.input.description) {

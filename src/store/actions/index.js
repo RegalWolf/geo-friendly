@@ -77,3 +77,27 @@ export {
   deleteMaps,
   updateMaps
 } from './maps';
+
+// Users Action
+export {
+  fetchUsers,
+  postUsers,
+  deleteUsers,
+  updateUsers
+} from './users';
+
+// Families Action
+export {
+  fetchFamilies,
+  postFamilies,
+  deleteFamilies,
+  updateFamilies
+} from './families';
+
+// Collections Action
+export {
+  fetchCollections,
+  postCollections,
+  deleteCollections,
+  updateCollections
+} from './collections';

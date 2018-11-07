@@ -7,36 +7,20 @@ import {
 
 import CloseItem from '@material-ui/icons/Close';
 
-const addClassifications = props => (
+const updateUsers = props => (
   <Paper style={styles.container}>
     <div style={styles.contentHeader}>
       <Typography variant='h6'>
-        Add Classifications
+        Update Users
       </Typography>
-      <Tooltip title='close' onClick={props.closeAddHandler}>
+      <Tooltip title='close' onClick={props.closed}>
         <IconButton aria-label='close'>
           <CloseItem />
         </IconButton>
       </Tooltip>
     </div>
     <div style={styles.contentBody}>
-      <FormControl error style={styles.textFieldName}>
-        <TextField
-          id="id"
-          label="id"
-          value={props.input.id}
-          onChange={props.changed('id')}
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        {props.inputMessage.id 
-          ? <FormHelperText>{props.inputMessage.id}</FormHelperText>
-          : null
-        }
-      </FormControl>
-      <FormControl error style={styles.textFieldName}>
+    <FormControl error style={styles.textField}>
         <TextField
           id="name"
           label="name"
@@ -52,25 +36,42 @@ const addClassifications = props => (
           : null
         }
       </FormControl>
-      <FormControl error style={styles.textFieldDescription}>
+      <FormControl error style={styles.textField}>
         <TextField
-          id="description"
-          label="Description"
-          value={props.input.description}
-          onChange={props.changed('description')}
+          id="username"
+          label="username"
+          value={props.input.username}
+          onChange={props.changed('username')}
           margin="normal"
           InputLabelProps={{
             shrink: true,
           }}
         />
-        {props.inputMessage.description 
-          ? <FormHelperText>{props.inputMessage.description}</FormHelperText>
+        {props.inputMessage.username 
+          ? <FormHelperText>{props.inputMessage.username}</FormHelperText>
+          : null
+        }
+      </FormControl>
+      <FormControl error style={styles.textField}>
+        <TextField
+          id="password"
+          label="password"
+          value={props.input.password}
+          onChange={props.changed('password')}
+          margin="normal"
+          type='password'
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        {props.inputMessage.password 
+          ? <FormHelperText>{props.inputMessage.password}</FormHelperText>
           : null
         }
       </FormControl>
     </div>
     <div style={styles.contentNavigation}>
-      <Button onClick={props.closeAddHandler}>
+      <Button onClick={props.closed}>
         Cancel
       </Button>
       <Button onClick={props.onToggleAlert}>
@@ -100,12 +101,9 @@ const styles = {
     padding: '.75rem 1.5rem',
     textAlign: 'right'
   },
-  textFieldName: {
-    width: '20%'
-  },
-  textFieldDescription: {
-    width: '58%'
+  textField: {
+    width: '32%'
   }
 };
 
-export default addClassifications;
+export default updateUsers;

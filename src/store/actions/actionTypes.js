@@ -201,5 +201,72 @@ export const UPDATE_MAPS_FAIL = 'UPDATE_MAPS_FAIL';
 export const DELETE_MAPS_START = 'DELETE_MAPS_START';
 export const DELETE_MAPS_SUCCESS = 'DELETE_MAPS_SUCCESS';
 export const DELETE_MAPS_FAIL = 'DELETE_MAPS_FAIL';
+
+// ----------------------------------- Data Users ---------------------------------
+
+// Fetch Data Users
+export const FETCH_USERS_START = 'FETCH_USERS_START';
+export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
+export const FETCH_USERS_FAIL = 'FETCH_USERS_FAIL';
+
+// Post Data Users
+export const POST_USERS_START = 'POST_USERS_START';
+export const POST_USERS_SUCCESS = 'POST_USERS_SUCCESS';
+export const POST_USERS_FAIL = 'POST_USERS_FAIL';
+
+// Update Data Users
+export const UPDATE_USERS_START = 'UPDATE_USERS_START';
+export const UPDATE_USERS_SUCCESS = 'UPDATE_USERS_SUCCESS';
+export const UPDATE_USERS_FAIL = 'UPDATE_USERS_FAIL';
+
+// Delete Data Users
+export const DELETE_USERS_START = 'DELETE_USERS_START';
+export const DELETE_USERS_SUCCESS = 'DELETE_USERS_SUCCESS';
+export const DELETE_USERS_FAIL = 'DELETE_USERS_FAIL';
+
+// ----------------------------------- Data Families ---------------------------------
+
+// Fetch Data Families
+export const FETCH_FAMILIES_START = 'FETCH_FAMILIES_START';
+export const FETCH_FAMILIES_SUCCESS = 'FETCH_FAMILIES_SUCCESS';
+export const FETCH_FAMILIES_FAIL = 'FETCH_FAMILIES_FAIL';
+
+// Post Data Families
+export const POST_FAMILIES_START = 'POST_FAMILIES_START';
+export const POST_FAMILIES_SUCCESS = 'POST_FAMILIES_SUCCESS';
+export const POST_FAMILIES_FAIL = 'POST_FAMILIES_FAIL';
+
+// Update Data Families
+export const UPDATE_FAMILIES_START = 'UPDATE_FAMILIES_START';
+export const UPDATE_FAMILIES_SUCCESS = 'UPDATE_FAMILIES_SUCCESS';
+export const UPDATE_FAMILIES_FAIL = 'UPDATE_FAMILIES_FAIL';
+
+// Delete Data Families
+export const DELETE_FAMILIES_START = 'DELETE_FAMILIES_START';
+export const DELETE_FAMILIES_SUCCESS = 'DELETE_FAMILIES_SUCCESS';
+export const DELETE_FAMILIES_FAIL = 'DELETE_FAMILIES_FAIL';
+
+// ----------------------------------- Data Collections ---------------------------------
+
+// Fetch Data Collections
+export const FETCH_COLLECTIONS_START = 'FETCH_COLLECTIONS_START';
+export const FETCH_COLLECTIONS_SUCCESS = 'FETCH_COLLECTIONS_SUCCESS';
+export const FETCH_COLLECTIONS_FAIL = 'FETCH_COLLECTIONS_FAIL';
+
+// Post Data Collections
+export const POST_COLLECTIONS_START = 'POST_COLLECTIONS_START';
+export const POST_COLLECTIONS_SUCCESS = 'POST_COLLECTIONS_SUCCESS';
+export const POST_COLLECTIONS_FAIL = 'POST_COLLECTIONS_FAIL';
+
+// Update Data Collections
+export const UPDATE_COLLECTIONS_START = 'UPDATE_COLLECTIONS_START';
+export const UPDATE_COLLECTIONS_SUCCESS = 'UPDATE_COLLECTIONS_SUCCESS';
+export const UPDATE_COLLECTIONS_FAIL = 'UPDATE_COLLECTIONS_FAIL';
+
+// Delete Data Collections
+export const DELETE_COLLECTIONS_START = 'DELETE_COLLECTIONS_START';
+export const DELETE_COLLECTIONS_SUCCESS = 'DELETE_COLLECTIONS_SUCCESS';
+export const DELETE_COLLECTIONS_FAIL = 'DELETE_COLLECTIONS_FAIL';
+
 // Error
 export const ERROR_RESET = 'ERROR_RESET';

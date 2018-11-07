@@ -14,6 +14,9 @@ import scalesReducer from './store/reducers/scales';
 import agesReducer from './store/reducers/ages';
 import islandsReducer from './store/reducers/islands';
 import racksReducer from './store/reducers/racks';
+import usersReducer from './store/reducers/users';
+import collectionsReducer from './store/reducers/collections';
+import familiesReducer from './store/reducers/families';
 import mapsReducer from './store/reducers/maps';
 import drawersReducer from './store/reducers/drawers';
 import acquisitionsReducer from './store/reducers/acquisitions';
@@ -29,6 +32,9 @@ const reducer = combineReducers({
   drawersReducer,
   islandsReducer,
   mapsReducer,
+  familiesReducer,
+  collectionsReducer,
+  usersReducer,
   racksReducer,
   acquisitionsReducer,
   classificationsReducer

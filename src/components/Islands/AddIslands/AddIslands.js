@@ -23,6 +23,22 @@ const addIslands = props => {
       <div style={styles.contentBody}>
         <FormControl error style={styles.textFieldName}>
           <TextField
+            id="id"
+            label="id"
+            value={props.input.id}
+            onChange={props.changed('id')}
+            margin="normal"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          {props.inputMessage.id 
+            ? <FormHelperText>{props.inputMessage.id}</FormHelperText>
+            : null
+          }
+        </FormControl>
+        <FormControl error style={styles.textFieldName}>
+          <TextField
             id="name"
             label="name"
             value={props.input.name}
@@ -87,10 +103,10 @@ const styles = {
     textAlign: 'right'
   },
   textFieldName: {
-    width: '25%'
+    width: '20%'
   },
   textFieldDescription: {
-    width: '74%'
+    width: '58%'
   }
 };
 

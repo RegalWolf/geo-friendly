@@ -42,7 +42,7 @@ const deleteIslands = props => (
 
 const mapStateToProps = state => {
   return {
-    loading: state.typesReducer.loading
+    loading: state.islandsReducer.loading
   };
 };
 

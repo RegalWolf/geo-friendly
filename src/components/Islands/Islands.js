@@ -159,7 +159,7 @@ let EnhancedTableToolbar = props => {
           </Typography>
         ) : (
           <Typography id="tableTitle" variant='h6'>
-            Types Table
+            Islands Table
           </Typography>
         )}
       </div>
@@ -240,10 +240,12 @@ class Islands extends React.Component {
         status: false
       },
       input: {
+        id: '',
         name: '',
         description: ''
       },
       inputMessage: {
+        id: '',
         name: '',
         description: ''
       }
@@ -400,6 +402,7 @@ class Islands extends React.Component {
       add: {
         ...prevState.add,
         input: {
+          id: '',
           name: '',
           description: ''
         }
@@ -408,8 +411,13 @@ class Islands extends React.Component {
   }
 
   addValidationHandler = () => {
+    let id = '';
     let name = '';
     let description = '';
+
+    if (!this.state.add.input.id) {
+      id = 'id is required';
+    }
 
     if (!this.state.add.input.name) {
       name = 'name is required';
@@ -427,6 +435,7 @@ class Islands extends React.Component {
       add: {
         ...prevState.add,
         inputMessage: {
+          id,
           name,
           description
         }
@@ -437,7 +446,9 @@ class Islands extends React.Component {
   toggleAddAlertHandler = async () => {
     await this.addValidationHandler();
 
-    if ((!this.state.add.inputMessage.name) && (!this.state.add.inputMessage.description)) {
+    if ((!this.state.add.inputMessage.name) 
+      && (!this.state.add.inputMessage.id)
+      && (!this.state.add.inputMessage.description)) {
       this.setState(prevState => ({
         add: {
           ...prevState.add,

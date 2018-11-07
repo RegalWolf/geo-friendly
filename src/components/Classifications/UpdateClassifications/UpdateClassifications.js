@@ -24,7 +24,7 @@ const updateClassifications = props => {
         <FormControl error style={styles.textFieldName}>
           <TextField
             id="name"
-            label="Name"
+            label="name"
             value={props.input.name}
             onChange={props.changed('name')}
             margin="normal"

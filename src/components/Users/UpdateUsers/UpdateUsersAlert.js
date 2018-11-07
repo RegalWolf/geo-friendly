@@ -10,7 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import Spinner from '../../Spinner/Spinner';
 
-const updateDrawersAlert = props => (
+const updateUsersAlert = props => (
   <Dialog
     open={props.open}
     onClose={props.onToggleAlert}
@@ -39,8 +39,8 @@ const updateDrawersAlert = props => (
 
 const mapStateToProps = state => {
   return {
-    loading: state.drawersReducer.loading
+    loading: state.usersReducer.loading
   };
 };
 
-export default connect(mapStateToProps)(updateDrawersAlert);
+export default connect(mapStateToProps)(updateUsersAlert);
