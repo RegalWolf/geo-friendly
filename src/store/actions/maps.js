@@ -22,15 +22,15 @@ export const fetchMapsFail = error => {
 };
 
 export const fetchMaps = token => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(fetchMapsStart());
     const url = `https://g3ofriendly.gurisa.com/api/v1/maps?token=${token}`;
-    axios.get(url)
-      .then(response => {
+    await axios.get(url)
+      .then(async response => {
         if (response.data.status) {
-          dispatch(fetchMapsSuccess(response.data.data));
+          await dispatch(fetchMapsSuccess(response.data.data));
         } else {
-          dispatch(fetchMapsFail(response.data.message));
+          await dispatch(fetchMapsFail(response.data.message));
         }
       });
   }

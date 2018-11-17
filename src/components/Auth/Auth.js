@@ -44,10 +44,6 @@ class Auth extends Component {
     isSignIn: false
   }
 
-  componentDidMount() {
-    this.props.errorReset();
-  }
-
   inputChangedHandler = (e, id) => {
     const updatedLoginForm = {
       ...this.state.loginForm
@@ -249,8 +245,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (username, password) => dispatch(actions.auth(username, password)),
-    errorReset: () => dispatch(actions.errorReset())
+    onAuth: (username, password) => dispatch(actions.auth(username, password))
   };
 };
 

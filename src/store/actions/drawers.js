@@ -22,15 +22,15 @@ export const fetchDrawersFail = error => {
 };
 
 export const fetchDrawers = token => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(fetchDrawersStart());
     const url = `https://g3ofriendly.gurisa.com/api/v1/drawers?token=${token}`;
-    axios.get(url)
-      .then(response => {
+    await axios.get(url)
+      .then(async response => {
         if (response.data.status) {
-          dispatch(fetchDrawersSuccess(response.data.data));
+          await dispatch(fetchDrawersSuccess(response.data.data));
         } else {
-          dispatch(fetchDrawersFail(response.data.message));
+          await dispatch(fetchDrawersFail(response.data.message));
         }
       });
   }

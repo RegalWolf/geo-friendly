@@ -26,8 +26,14 @@ import DeleteCollections from './DeleteCollections/DeleteCollections';
 import DeleteCollectionsMessage from './DeleteCollections/DeleteCollectionsMessage';
 import Spinner from '../Spinner/Spinner';
 
-function createData(id, name, rack_id, description) {
-  return { id, name, rack_id, description };
+function createData(id, registration, inventory, code, name, synonym, amount, founder, 
+  collector, location, coordinate, formation, determination, redetermination, type,
+  width, height, weight, high, environment, reference, description, photo, family_id, 
+  age_id, drawer_id, map_id, acquisition_id, user_id, taken_at, created_at, updated_at) {
+  return { id, registration, inventory, code, name, synonym, amount, founder, 
+    collector, location, coordinate, formation, determination, redetermination, type,
+    width, height, weight, high, environment, reference, description, photo, family_id, 
+    age_id, drawer_id, map_id, acquisition_id, user_id, taken_at, created_at, updated_at };
 }
 
 function desc(a, b, orderBy) {
@@ -56,9 +62,37 @@ function getSorting(order, orderBy) {
 
 const rows = [
   { id: 'id', numeric: false, disablePadding: true, label: 'Id' },
+  { id: 'registration', numeric: false, disablePadding: false, label: 'Registration' },
+  { id: 'inventory', numeric: false, disablePadding: false, label: 'Inventory' },
+  { id: 'code', numeric: false, disablePadding: false, label: 'Code' },
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-  { id: 'rack_id', numeric: false, disablePadding: false, label: 'Racks Id' },
-  { id: 'description', numeric: false, disablePadding: false, label: 'Description' }
+  { id: 'synonym', numeric: false, disablePadding: false, label: 'Synonym' },
+  { id: 'amount', numeric: false, disablePadding: false, label: 'Amount' },
+  { id: 'founder', numeric: false, disablePadding: false, label: 'Founder' },
+  { id: 'collector', numeric: false, disablePadding: false, label: 'Collector' },
+  { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
+  { id: 'coordinate', numeric: false, disablePadding: false, label: 'Coordinate' },
+  { id: 'formation', numeric: false, disablePadding: false, label: 'Formation' },
+  { id: 'determination', numeric: false, disablePadding: false, label: 'Determination' },
+  { id: 'redetermination', numeric: false, disablePadding: false, label: 'Redetermination' },
+  { id: 'type', numeric: false, disablePadding: false, label: 'Type' },
+  { id: 'width', numeric: false, disablePadding: false, label: 'Width' },
+  { id: 'height', numeric: false, disablePadding: false, label: 'Height' },
+  { id: 'weight', numeric: false, disablePadding: false, label: 'Weight' },
+  { id: 'high', numeric: false, disablePadding: false, label: 'High' },
+  { id: 'environment', numeric: false, disablePadding: false, label: 'Environment' },
+  { id: 'reference', numeric: false, disablePadding: false, label: 'Reference' },
+  { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
+  { id: 'photo', numeric: false, disablePadding: false, label: 'Photo' },
+  { id: 'family_id', numeric: false, disablePadding: false, label: 'Family_id' },
+  { id: 'age_id', numeric: false, disablePadding: false, label: 'Age_id' },
+  { id: 'drawer_id', numeric: false, disablePadding: false, label: 'Drawer_id' },
+  { id: 'map_id', numeric: false, disablePadding: false, label: 'Map_id' },
+  { id: 'acquisition_id', numeric: false, disablePadding: false, label: 'Acquisition_id' },
+  { id: 'user_id', numeric: false, disablePadding: false, label: 'User_id' },
+  { id: 'taken_at', numeric: false, disablePadding: false, label: 'Taken_at' },
+  { id: 'created_at', numeric: false, disablePadding: false, label: 'Created_at' },
+  { id: 'updated_at', numeric: false, disablePadding: false, label: 'Updated_at' }
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -67,18 +101,12 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const { order, orderBy } = this.props;
 
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
-          </TableCell>
+          <TableCell padding="checkbox" />
           {rows.map(row => {
             return (
               <TableCell
@@ -110,12 +138,9 @@ class EnhancedTableHead extends React.Component {
 }
 
 EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
 };
 
 const toolbarStyles = theme => ({
@@ -179,12 +204,6 @@ let EnhancedTableToolbar = props => {
               </IconButton>
             </Tooltip>
           </React.Fragment>
-        ) : numSelected > 1 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
         ) : (
           <React.Fragment>
             <Tooltip title="Refresh" onClick={props.onRefresh}>
@@ -214,7 +233,6 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 const styles = theme => ({
   root: {
     width: '100%',
-    // marginTop: theme.spacing.unit * 3,
   },
   table: {
     width: '100%'
@@ -237,7 +255,6 @@ class Collections extends React.Component {
     drawers: [],
     maps: [],
     acquisitions: [],
-    users: [],
     add: {
       open: false,
       openAlert: false,
@@ -247,16 +264,35 @@ class Collections extends React.Component {
         status: false
       },
       input: {
-        code: '',
-        name: '',
-        inventory: '',
-        registration: '',
-        age_id: '',
-        family_id: '',
-        drawer_id: '',
-        map_id: '',
-        acquisition_id: '',
-        user_id: ''
+        registration: '', 
+        inventory: '', 
+        code: '', 
+        name: '', 
+        synonym: '', 
+        amount: '', 
+        founder: '', 
+        collector: '', 
+        location: '', 
+        coordinate: '', 
+        formation: '', 
+        determination: '', 
+        redetermination: '', 
+        type: '',
+        width: '', 
+        height: '', 
+        weight: '', 
+        high: '', 
+        environment: '', 
+        reference: '', 
+        description: '', 
+        photo: '', 
+        family_id: '', 
+        age_id: '', 
+        drawer_id: '', 
+        map_id: '', 
+        acquisition_id: '', 
+        user_id: '', 
+        taken_at: ''
       },
       inputMessage: {
         code: '',
@@ -267,8 +303,7 @@ class Collections extends React.Component {
         family_id: '',
         drawer_id: '',
         map_id: '',
-        acquisition_id: '',
-        user_id: ''
+        acquisition_id: ''
       }
     },
     update: {
@@ -280,16 +315,35 @@ class Collections extends React.Component {
         status: false
       },
       input: {
-        code: '',
-        name: '',
-        inventory: '',
-        registration: '',
-        age_id: '',
-        family_id: '',
-        drawer_id: '',
-        map_id: '',
-        acquisition_id: '',
-        user_id: ''
+        registration: '', 
+        inventory: '', 
+        code: '', 
+        name: '', 
+        synonym: '', 
+        amount: '', 
+        founder: '', 
+        collector: '', 
+        location: '', 
+        coordinate: '', 
+        formation: '', 
+        determination: '', 
+        redetermination: '', 
+        type: '',
+        width: '', 
+        height: '', 
+        weight: '', 
+        high: '', 
+        environment: '', 
+        reference: '', 
+        description: '', 
+        photo: '', 
+        family_id: '', 
+        age_id: '', 
+        drawer_id: '', 
+        map_id: '', 
+        acquisition_id: '', 
+        user_id: '', 
+        taken_at: ''
       },
       inputMessage: {
         code: '',
@@ -300,8 +354,7 @@ class Collections extends React.Component {
         family_id: '',
         drawer_id: '',
         map_id: '',
-        acquisition_id: '',
-        user_id: ''
+        acquisition_id: ''
       }
     },
     delete: {
@@ -313,19 +366,41 @@ class Collections extends React.Component {
       }
     },
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: 10,
     token: localStorage.getItem('token'),
     loading: false
   };
 
   async componentDidMount() {
+    const token = await localStorage.getItem('token');
+
+    if (!token) {
+      return;
+    }
+
     await this.props.onFetch(this.state.token);
     this.props.onFetchFamilies(this.state.token);
     this.props.onFetchAcquisitions(this.state.token);
     this.props.onFetchMaps(this.state.token);
     this.props.onFetchAges(this.state.token);
-    this.props.onFetchUsers(this.state.token);
     this.props.onFetchDrawers(this.state.token);
+
+    this.setState(prevState => ({
+      add: {
+        ...prevState.add,
+        input: {
+          ...prevState.add.input,
+          user_id: this.props.user_id
+        }
+      },
+      update: {
+        ...prevState.update,
+        input: {
+          ...prevState.update.input,
+          user_id: this.props.user_id
+        }
+      }
+    }));
   }
 
   componentDidUpdate() {
@@ -339,7 +414,15 @@ class Collections extends React.Component {
         this.setState(prevState => ({
           data: [
             ...prevState.data,
-            createData(collection.id, collection.name, collection.rack_id, collection.description)
+            createData(collection.id, collection.registration, collection.inventory, collection.code,
+              collection.name, collection.synonym, collection.amount, collection.founder, 
+              collection.collector, collection.location, collection.coordinate, collection.formation,
+              collection.determination, collection.redetermination, collection.type,
+              collection.width, collection.height, collection.weight, collection.high,
+              collection.environment, collection.reference, collection.description, collection.photo,
+              collection.family_id, collection.age_id, collection.drawer_id, collection.map_id,
+              collection.acquisition_id, collection.user_id, collection.taken_at, collection.created_at,
+              collection.updated_at)
           ]
         }))
       ));
@@ -374,12 +457,6 @@ class Collections extends React.Component {
         acquisitions: this.props.acquisitions,
       });
     }
-
-    if (this.state.users !== this.props.users) {
-      this.setState({
-        users: this.props.users,
-      });
-    }
   }
 
   handleRequestSort = (event, property) => {
@@ -393,30 +470,15 @@ class Collections extends React.Component {
     this.setState({ order, orderBy });
   };
 
-  handleSelectAllClick = event => {
-    if (event.target.checked) {
-      this.setState(state => ({ selected: state.data.map(n => n.id) }));
-      return;
-    }
-    this.setState({ selected: [] });
-  };
-
   handleClick = (event, id) => {
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
+      newSelected[0] = id;
+    } else {
+      newSelected = [];
     }
 
     this.setState({ selected: newSelected });
@@ -438,9 +500,13 @@ class Collections extends React.Component {
     });
   }
 
-  refreshHandler = () => {
-    this.props.onFetch(this.state.token);
-    this.props.onFetchRacks(this.state.token);
+  refreshHandler = async () => {
+    await this.props.onFetch(this.state.token);
+    this.props.onFetchAges(this.state.token);
+    this.props.onFetchFamilies(this.state.token);
+    this.props.onFetchDrawers(this.state.token);
+    this.props.onFetchMaps(this.state.token);
+    this.props.onFetchAcquisitions(this.state.token);
   }
 
   // ------------------- Add Function ---------------------
@@ -482,18 +548,56 @@ class Collections extends React.Component {
       add: {
         ...prevState.add,
         input: {
-          name: '',
-          rack_id: '',
-          description: ''
+          ...prevState.add.input,
+          registration: '', 
+          inventory: '', 
+          code: '', 
+          name: '', 
+          synonym: '', 
+          amount: '', 
+          founder: '', 
+          collector: '', 
+          location: '', 
+          coordinate: '', 
+          formation: '', 
+          determination: '', 
+          redetermination: '', 
+          type: '',
+          width: '', 
+          height: '', 
+          weight: '', 
+          high: '', 
+          environment: '', 
+          reference: '', 
+          description: '', 
+          photo: '', 
+          family_id: '', 
+          age_id: '', 
+          drawer_id: '', 
+          map_id: '', 
+          acquisition_id: '', 
+          taken_at: ''
         }
       }
     }));
   }
 
   addValidationHandler = () => {
+    let code = '';
     let name = '';
-    let rack_id = '';
-    let description = '';
+    let inventory = '';
+    let registration = '';
+    let age_id = '';
+    let family_id = '';
+    let drawer_id = '';
+    let map_id = '';
+    let acquisition_id = '';
+
+    if (!this.state.add.input.code) {
+      code = 'code is required';
+    } else if (this.state.add.input.code.length < 4) {
+      code = 'The code must be at least 4 characters';
+    }
 
     if (!this.state.add.input.name) {
       name = 'name is required';
@@ -501,23 +605,51 @@ class Collections extends React.Component {
       name = 'The name must be at least 4 characters';
     }
 
-    if (!this.state.add.input.rack_id) {
-      rack_id = 'racks id is required';
+    if (!this.state.add.input.inventory) {
+      inventory = 'inventory is required';
+    } else if (this.state.add.input.inventory.length < 4) {
+      inventory = 'The inventory must be at least 4 characters';
     }
-    
-    if (!this.state.add.input.description) {
-      description = 'description is required';
-    } else if (this.state.add.input.description.length < 4) {
-      description = 'The description must be at least 4 characters';
+
+    if (!this.state.add.input.registration) {
+      registration = 'registration is required';
+    } else if (this.state.add.input.registration.length < 4) {
+      registration = 'The registration must be at least 4 characters';
+    }
+
+    if (!this.state.add.input.family_id) {
+      family_id = 'family_id id is required';
+    }
+
+    if (!this.state.add.input.age_id) {
+      age_id = 'age_id id is required';
+    }
+
+    if (!this.state.add.input.drawer_id) {
+      drawer_id = 'drawer_id id is required';
+    }
+
+    if (!this.state.add.input.map_id) {
+      map_id = 'map_id id is required';
+    }
+
+    if (!this.state.add.input.acquisition_id) {
+      acquisition_id = 'acquisition_id id is required';
     }
 
     this.setState(prevState => ({
       add: {
         ...prevState.add,
         inputMessage: {
+          code,
           name,
-          rack_id,
-          description
+          inventory,
+          registration,
+          age_id,
+          family_id,
+          drawer_id,
+          map_id,
+          acquisition_id
         }
       }
     }));
@@ -526,9 +658,15 @@ class Collections extends React.Component {
   toggleAddAlertHandler = async () => {
     await this.addValidationHandler();
 
-    if ((!this.state.add.inputMessage.name) 
-      && (!this.state.add.inputMessage.description) 
-      && (!this.state.add.inputMessage.rack_id)) {
+    if ((!this.state.add.inputMessage.code) 
+      && (!this.state.add.inputMessage.name) 
+      && (!this.state.add.inputMessage.inventory) 
+      && (!this.state.add.inputMessage.registration) 
+      && (!this.state.add.inputMessage.family_id) 
+      && (!this.state.add.inputMessage.age_id) 
+      && (!this.state.add.inputMessage.drawer_id) 
+      && (!this.state.add.inputMessage.map_id) 
+      && (!this.state.add.inputMessage.acquisition_id)) {
       this.setState(prevState => ({
         add: {
           ...prevState.add,
@@ -574,8 +712,8 @@ class Collections extends React.Component {
   // ------------------- Update Function ---------------------
 
   openUpdateHandler = () => {
-    const input = this.state.drawers.filter(drawer => (
-      drawer.id === this.state.selected[0]
+    const input = this.state.collections.filter(collection => (
+      collection.id === this.state.selected[0]
     ));
 
     this.setState(prevState => ({
@@ -583,9 +721,35 @@ class Collections extends React.Component {
         ...prevState.update,
         open: true,
         input: {
-          name: input[0].name,
-          rack_id: input[0].rack_id,
-          description: input[0].description
+          id: input[0].id, 
+          registration: input[0].registration, 
+          inventory: input[0].inventory, 
+          code: input[0].code, 
+          name: input[0].name, 
+          synonym: input[0].synonym ? input[0].synonym : '', 
+          amount: input[0].amount ? input[0].amount : '', 
+          founder: input[0].founder ? input[0].founder : '', 
+          collector: input[0].collector ? input[0].collector : '', 
+          location: input[0].location ? input[0].location : '', 
+          coordinate: input[0].coordinate ? input[0].coordinate : '', 
+          formation: input[0].formation ? input[0].formation : '', 
+          determination: input[0].determination ? input[0].determination : '', 
+          redetermination: input[0].redetermination ? input[0].redetermination : '', 
+          type: input[0].type ? input[0].type : '',
+          width: input[0].width ? input[0].width : '', 
+          height: input[0].height ? input[0].height : '', 
+          weight: input[0].weight ? input[0].weight : '', 
+          high: input[0].high ? input[0].high : '', 
+          environment: input[0].environment ? input[0].environment : '', 
+          reference: input[0].reference ? input[0].reference : '', 
+          description: input[0].description ? input[0].description : '', 
+          photo: input[0].photo ? input[0].photo : '', 
+          family_id: input[0].family_id, 
+          age_id: input[0].age_id, 
+          drawer_id: input[0].drawer_id, 
+          map_id: input[0].map_id, 
+          acquisition_id: input[0].acquisition_id, 
+          taken_at: input[0].taken_at ? input[0].taken_at : '', 
         }
       }
     }));
@@ -605,9 +769,35 @@ class Collections extends React.Component {
       update: {
         ...prevState.update,
         input: {
-          name: '',
-          rack_id: '',
-          description: ''
+          id: '', 
+          registration: '', 
+          inventory: '', 
+          code: '', 
+          name: '', 
+          synonym: '', 
+          amount: '', 
+          founder: '', 
+          collector: '', 
+          location: '', 
+          coordinate: '', 
+          formation: '', 
+          determination: '', 
+          redetermination: '', 
+          type: '',
+          width: '', 
+          height: '', 
+          weight: '', 
+          high: '', 
+          environment: '', 
+          reference: '', 
+          description: '', 
+          photo: '', 
+          family_id: '', 
+          age_id: '', 
+          drawer_id: '', 
+          map_id: '', 
+          acquisition_id: '', 
+          taken_at: ''
         }
       }
     }));
@@ -629,9 +819,21 @@ class Collections extends React.Component {
   }
 
   updateValidationHandler = () => {
+    let code = '';
     let name = '';
-    let rack_id = '';
-    let description = '';
+    let inventory = '';
+    let registration = '';
+    let age_id = '';
+    let family_id = '';
+    let drawer_id = '';
+    let map_id = '';
+    let acquisition_id = '';
+
+    if (!this.state.update.input.code) {
+      code = 'code is required';
+    } else if (this.state.update.input.code.length < 4) {
+      code = 'The code must be at least 4 characters';
+    }
 
     if (!this.state.update.input.name) {
       name = 'name is required';
@@ -639,23 +841,51 @@ class Collections extends React.Component {
       name = 'The name must be at least 4 characters';
     }
 
-    if (!this.state.update.input.rack_id) {
-      rack_id = 'rack id is required';
+    if (!this.state.update.input.inventory) {
+      inventory = 'inventory is required';
+    } else if (this.state.update.input.inventory.length < 4) {
+      inventory = 'The inventory must be at least 4 characters';
     }
-    
-    if (!this.state.update.input.description) {
-      description = 'description is required';
-    } else if (this.state.update.input.description.length < 4) {
-      description = 'The description must be at least 4 characters';
+
+    if (!this.state.update.input.registration) {
+      registration = 'registration is required';
+    } else if (this.state.update.input.registration.length < 4) {
+      registration = 'The registration must be at least 4 characters';
+    }
+
+    if (!this.state.update.input.family_id) {
+      family_id = 'family_id id is required';
+    }
+
+    if (!this.state.update.input.age_id) {
+      age_id = 'age_id id is required';
+    }
+
+    if (!this.state.update.input.drawer_id) {
+      drawer_id = 'drawer_id id is required';
+    }
+
+    if (!this.state.update.input.map_id) {
+      map_id = 'map_id id is required';
+    }
+
+    if (!this.state.update.input.acquisition_id) {
+      acquisition_id = 'acquisition_id id is required';
     }
 
     this.setState(prevState => ({
       update: {
         ...prevState.update,
         inputMessage: {
+          code,
           name,
-          rack_id,
-          description
+          inventory,
+          registration,
+          age_id,
+          family_id,
+          drawer_id,
+          map_id,
+          acquisition_id
         }
       }
     }));
@@ -664,9 +894,15 @@ class Collections extends React.Component {
   toggleUpdateAlertHandler = async () => {
     await this.updateValidationHandler();
 
-    if ((!this.state.update.inputMessage.name) 
-      && (!this.state.update.inputMessage.rack_id)
-      && (!this.state.update.inputMessage.description)) {
+    if ((!this.state.update.inputMessage.code) 
+      && (!this.state.update.inputMessage.name) 
+      && (!this.state.update.inputMessage.inventory) 
+      && (!this.state.update.inputMessage.registration) 
+      && (!this.state.update.inputMessage.family_id) 
+      && (!this.state.update.inputMessage.age_id) 
+      && (!this.state.update.inputMessage.drawer_id) 
+      && (!this.state.update.inputMessage.map_id) 
+      && (!this.state.update.inputMessage.acquisition_id)) {
       this.setState(prevState => ({
         update: {
           ...prevState.update,
@@ -701,10 +937,10 @@ class Collections extends React.Component {
     }));
   }
   
-  saveUpdateHandler = async () => {
+  saveUpdateHandler = () => {
     const id = this.state.selected[0] ? this.state.selected[0].toString() : '1';
 
-    await this.props.onUpdate(id, this.state.token, this.state.update.input);
+    this.props.onUpdate(id, this.state.token, this.state.update.input);
     this.toggleUpdateAlertHandler();
     this.closeUpdateHandler();
     this.resetInputUpdateHandler();
@@ -779,7 +1015,11 @@ class Collections extends React.Component {
               inputMessage={this.state.add.inputMessage}
               changed={this.inputAddHandler} 
               onToggleAlert={this.toggleAddAlertHandler}
-              racks={this.state.racks}
+              ages={this.state.ages}
+              families={this.state.families}
+              drawers={this.state.drawers}
+              maps={this.state.maps}
+              acquisitions={this.state.acquisitions}
             /> 
           : null
         }
@@ -805,7 +1045,11 @@ class Collections extends React.Component {
               inputMessage={this.state.update.inputMessage}
               changed={this.inputUpdateHandler} 
               onToggleAlert={this.toggleUpdateAlertHandler}
-              racks={this.state.racks}
+              ages={this.state.ages}
+              families={this.state.families}
+              drawers={this.state.drawers}
+              maps={this.state.maps}
+              acquisitions={this.state.acquisitions}
             /> 
           : null
         }
@@ -843,12 +1087,9 @@ class Collections extends React.Component {
 
             <Table className={classes.table} aria-labelledby="tableTitle">
               <EnhancedTableHead
-                numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
-                onSelectAllClick={this.handleSelectAllClick}
                 onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
               />
 
               <TableBody>
@@ -875,16 +1116,129 @@ class Collections extends React.Component {
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="default">
+                          {n.registration}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.inventory}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.code}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
                           {n.name}
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="default">
-                          {n.rack_id}
+                          {n.synonym}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.amount}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.founder}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.collector}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.location}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.coordinate}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.formation}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.determination}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.redetermination}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.type}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.width}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.height}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.weight}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.high}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.environment}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.reference}
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="default">
                           {n.description}
                         </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.photo}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.family_id}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.age_id}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.drawer_id}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.map_id}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.acquisition_id}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.user_id}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.taken_at}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.created_at}
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="default">
+                          {n.updated_at}
+                        </TableCell>
+
                       </TableRow>
                     );
                   })}
@@ -923,11 +1277,11 @@ Collections.propTypes = {
 
 const mapStateToProps = state => {
   return {
+    user_id: state.authReducer.user_id,
     collections: state.collectionsReducer.collections,
     ages: state.agesReducer.ages,
     maps: state.mapsReducer.maps,
     families: state.familiesReducer.families,
-    users: state.usersReducer.users,
     acquisitions: state.acquisitionsReducer.acquisitions,
     drawers: state.drawersReducer.drawers,
     add: state.collectionsReducer.add,
@@ -945,10 +1299,9 @@ const mapDispatchToProps = dispatch => {
     onFetchDrawers: token => dispatch(actions.fetchDrawers(token)),
     onFetchMaps: token => dispatch(actions.fetchMaps(token)),
     onFetchAcquisitions: token => dispatch(actions.fetchAcquisitions(token)),
-    onFetchUsers: token => dispatch(actions.fetchUsers(token)),
-    onPost: (drawer, token) => dispatch(actions.postCollections(drawer, token)),
+    onPost: (collection, token) => dispatch(actions.postCollections(collection, token)),
     onDelete: (id, token) => dispatch(actions.deleteCollections(id, token)),
-    onUpdate: (id, token, drawer) => dispatch(actions.updateCollections(id, token, drawer))
+    onUpdate: (id, token, collection) => dispatch(actions.updateCollections(id, token, collection))
   };
 };
 

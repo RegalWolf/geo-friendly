@@ -22,9 +22,9 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import MenuIcon from '@material-ui/icons/Menu';
 import HomeIcon from '@material-ui/icons/Home';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
-import SettingsIcon from '@material-ui/icons/Settings';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
-import Collection from './../Collection/Collection';
+import Collections from './../Collections/Collections';
 import Home from './../Home/Home';
 import Islands from './../Islands/Islands';
 import Racks from './../Racks/Racks';
@@ -123,11 +123,13 @@ class PersistentDrawerLeft extends React.Component {
     ]
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.props.authCheckState();
+
     const token = localStorage.getItem('token');
 
     if (!token) {
-      this.props.history.push('/login');
+      return this.props.history.push('/login');
     }
   }
 
@@ -147,7 +149,7 @@ class PersistentDrawerLeft extends React.Component {
 
   onLogout = () => {
     this.props.onLogout();
-
+    
     this.props.history.push('/login');
   }
 
@@ -242,9 +244,9 @@ class PersistentDrawerLeft extends React.Component {
             <List>
               <ListItem button onClick={this.onLogout}>
                 <ListItemIcon>
-                  <SettingsIcon /> 
+                  <PowerSettingsNewIcon /> 
                 </ListItemIcon>
-                <ListItemText primary='Settings' />
+                <ListItemText primary='Logout' />
               </ListItem>
             </List>
           </Drawer>
@@ -266,7 +268,7 @@ class PersistentDrawerLeft extends React.Component {
               <Route path='/ages' exact component={Ages} />
               <Route path='/maps' exact component={Maps} />
               <Route path='/users' exact component={Users} />
-              <Route path='/collections' exact component={Collection} />
+              <Route path='/collections' exact component={Collections} />
               <Route path='/' exact component={Home} />
             </Switch>
           </main>
@@ -283,6 +285,7 @@ PersistentDrawerLeft.propTypes = {
 
 const mapDispatchToProps = dispatch => {
   return {
+    authCheckState: () => dispatch(actions.authCheckState()),
     onLogout: () => dispatch(actions.logout())
   };
 };

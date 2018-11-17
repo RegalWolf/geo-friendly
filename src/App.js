@@ -4,8 +4,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 import Navigation from './components/Navigation/Navigation';
-// import Navigation from './components/Navigation/Nav';
-// import Navigation from './components/Navigation/NavBar';
 import Auth from './components/Auth/Auth';
 
 const theme = createMuiTheme({

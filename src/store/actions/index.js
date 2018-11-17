@@ -2,8 +2,7 @@
 export { 
   auth,
   logout,
-  authCheckState,
-  errorReset
+  authCheckState
 } from './auth';
 
 // Types Action

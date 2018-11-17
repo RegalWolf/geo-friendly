@@ -1,13 +1,13 @@
 import * as actionTypes from './actionTypes';
 import axios from 'axios';
 
-export const fetchCollectionstart = () => {
+export const fetchCollectionsStart = () => {
   return {
     type: actionTypes.FETCH_COLLECTIONS_START
   };
 };
 
-export const fetchCollectionsuccess = collections => {
+export const fetchCollectionsSuccess = collections => {
   return {
     type: actionTypes.FETCH_COLLECTIONS_SUCCESS,
     collections
@@ -22,27 +22,27 @@ export const fetchCollectionsFail = error => {
 };
 
 export const fetchCollections = token => {
-  return dispatch => {
-    dispatch(fetchCollectionstart());
+  return async dispatch => {
+    dispatch(fetchCollectionsStart());
     const url = `https://g3ofriendly.gurisa.com/api/v1/collections?token=${token}`;
-    axios.get(url)
-      .then(response => {
+    await axios.get(url)
+      .then(async response => {
         if (response.data.status) {
-          dispatch(fetchCollectionsuccess(response.data.data));
+          await dispatch(fetchCollectionsSuccess(response.data.data));
         } else {
-          dispatch(fetchCollectionsFail(response.data.message));
+          await dispatch(fetchCollectionsFail(response.data.message));
         }
       });
   }
 };
 
-export const postCollectionstart = () => {
+export const postCollectionsStart = () => {
   return {
     type: actionTypes.POST_COLLECTIONS_START,
   };
 };
 
-export const postCollectionsuccess = message => {
+export const postCollectionsSuccess = message => {
   return {
     type: actionTypes.POST_COLLECTIONS_SUCCESS,
     message
@@ -58,27 +58,34 @@ export const postCollectionsFail = message => {
 
 export const postCollections = (collection, token) => {
   return async dispatch => {
-    dispatch(postCollectionstart());
+    console.log(collection);
+    dispatch(postCollectionsStart());
     const url = `https://g3ofriendly.gurisa.com/api/v1/collections?token=${token}`;
     await axios.post(url, collection)
       .then(async response => {
+        console.log('response');
+        console.log(response);
         if (response.data.status) {
-          await dispatch(postCollectionsuccess(response.data.message));
+          await dispatch(postCollectionsSuccess(response.data.message));
           dispatch(fetchCollections(token));
         } else {
           dispatch(postCollectionsFail(response.data.message));
         }
+      })
+      .catch(err => {
+        console.log('err');
+        console.log(err);
       });
   }
 };
 
-export const deleteCollectionstart = () => {
+export const deleteCollectionsStart = () => {
   return {
     type: actionTypes.DELETE_COLLECTIONS_START
   };
 };
 
-export const deleteCollectionsuccess = message => {
+export const deleteCollectionsSuccess = message => {
   return {
     type: actionTypes.DELETE_COLLECTIONS_SUCCESS,
     message
@@ -94,12 +101,12 @@ export const deleteCollectionsFail = message => {
 
 export const deleteCollections = (id, token) => {
   return async dispatch => {
-    dispatch(deleteCollectionstart());
+    dispatch(deleteCollectionsStart());
     const url = `https://g3ofriendly.gurisa.com/api/v1/collections/${id}?token=${token}`;
     await axios.delete(url)
       .then(async response => {
         if (response.data.status) {
-          await dispatch(deleteCollectionsuccess(response.data.message));
+          await dispatch(deleteCollectionsSuccess(response.data.message));
           dispatch(fetchCollections(token));
         } else {
           dispatch(deleteCollectionsFail(response.data.message));
@@ -108,13 +115,13 @@ export const deleteCollections = (id, token) => {
   }
 };
 
-export const updateCollectionstart = () => {
+export const updateCollectionsStart = () => {
   return {
     type: actionTypes.UPDATE_COLLECTIONS_START
   };
 };
 
-export const updateCollectionsuccess = message => {
+export const updateCollectionsSuccess = message => {
   return {
     type: actionTypes.UPDATE_COLLECTIONS_SUCCESS,
     message,
@@ -130,12 +137,12 @@ export const updateCollectionsFail = message => {
 
 export const updateCollections = (id, token, collection) => {
   return async dispatch => {
-    dispatch(updateCollectionstart());
+    dispatch(updateCollectionsStart());
     const url = `https://g3ofriendly.gurisa.com/api/v1/collections/${id}?token=${token}`;
     await axios.patch(url, collection)
       .then(async response => {
         if (response.data.status) {
-          await dispatch(updateCollectionsuccess(response.data.message));
+          await dispatch(updateCollectionsSuccess(response.data.message));
           dispatch(fetchCollections(token));
         } else {
           dispatch(updateCollectionsFail(response.data.message));

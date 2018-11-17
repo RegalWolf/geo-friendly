@@ -6,7 +6,7 @@ import WarningIcon from '@material-ui/icons/Warning';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CloseIcon from '@material-ui/icons/Close';
 
-const addDrawersMessage = props => (
+const addCollectionsMessage = props => (
   <Paper style={props.status ? styles.success : styles.warning}>
     <div style={styles.message}>
       <Icon style={styles.icon}>
@@ -53,4 +53,4 @@ const styles = {
   }
 }
 
-export default addDrawersMessage;
+export default addCollectionsMessage;

@@ -10,7 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import Spinner from '../../Spinner/Spinner';
 
-const deleteDrawers = props => (
+const deleteCollections = props => (
   <Dialog
     open={props.open}
     onClose={props.onToggleAlert}
@@ -42,8 +42,8 @@ const deleteDrawers = props => (
 
 const mapStateToProps = state => {
   return {
-    loading: state.drawersReducer.loading
+    loading: state.collectionsReducer.loading
   };
 };
 
-export default connect(mapStateToProps)(deleteDrawers);
+export default connect(mapStateToProps)(deleteCollections);

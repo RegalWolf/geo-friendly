@@ -22,15 +22,15 @@ export const fetchFamiliesFail = error => {
 };
 
 export const fetchFamilies = token => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(fetchFamiliesStart());
     const url = `https://g3ofriendly.gurisa.com/api/v1/families?token=${token}`;
-    axios.get(url)
-      .then(response => {
+    await axios.get(url)
+      .then(async response => {
         if (response.data.status) {
-          dispatch(fetchFamiliesSuccess(response.data.data));
+          await dispatch(fetchFamiliesSuccess(response.data.data));
         } else {
-          dispatch(fetchFamiliesFail(response.data.message));
+          await dispatch(fetchFamiliesFail(response.data.message));
         }
       });
   }

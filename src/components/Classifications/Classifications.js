@@ -66,18 +66,12 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const { order, orderBy } = this.props;
 
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
-          </TableCell>
+          <TableCell padding="checkbox" />
           {rows.map(row => {
             return (
               <TableCell
@@ -109,12 +103,9 @@ class EnhancedTableHead extends React.Component {
 }
 
 EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
 };
 
 const toolbarStyles = theme => ({
@@ -178,12 +169,6 @@ let EnhancedTableToolbar = props => {
               </IconButton>
             </Tooltip>
           </React.Fragment>
-        ) : numSelected > 1 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
         ) : (
           <React.Fragment>
             <Tooltip title="Refresh" onClick={props.onRefresh}>
@@ -276,12 +261,18 @@ class Classifications extends React.Component {
       }
     },
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: 10,
     token: localStorage.getItem('token'),
     loading: false
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    const token = await localStorage.getItem('token');
+
+    if (!token) {
+      return;
+    }
+
     this.props.onFetch(this.state.token);
   }
 
@@ -314,30 +305,15 @@ class Classifications extends React.Component {
     this.setState({ order, orderBy });
   };
 
-  handleSelectAllClick = event => {
-    if (event.target.checked) {
-      this.setState(state => ({ selected: state.data.map(n => n.id) }));
-      return;
-    }
-    this.setState({ selected: [] });
-  };
-
   handleClick = (event, id) => {
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
+      newSelected[0] = id;
+    } else {
+      newSelected = [];
     }
 
     this.setState({ selected: newSelected });
@@ -751,12 +727,9 @@ class Classifications extends React.Component {
 
             <Table className={classes.table} aria-labelledby="tableTitle">
               <EnhancedTableHead
-                numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
-                onSelectAllClick={this.handleSelectAllClick}
                 onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
               />
 
               <TableBody>
