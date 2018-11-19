@@ -3,8 +3,9 @@ import { updateObject } from '../utility';
 
 const initialState = {
   collections: [],
-  error: null,
   loading: false,
+  errors: {},
+  successMessage: '',
   add: {
     status: false,
     message: null
@@ -21,7 +22,6 @@ const initialState = {
 
 const fetchCollectionsStart = (state, action) => {
   return updateObject(state, {
-    error: null,
     loading: true
   });
 };
@@ -29,7 +29,7 @@ const fetchCollectionsStart = (state, action) => {
 const fetchCollectionsSuccess = (state, action) => {
   return updateObject(state, {
     collections: action.collections,
-    error: null,
+    errors: {},
     loading: false
   });
 };
@@ -37,57 +37,45 @@ const fetchCollectionsSuccess = (state, action) => {
 const fetchCollectionsFail = (state, action) => {
   return updateObject(state, {
     loading: false,
-    error: action.error
+    errors: action.errors
   });
 };
 
 const postCollectionsStart = (state, action) => {
   return updateObject(state, {
-    loading: true,
-    add: {
-      status: false,
-      message: null
-    }
+    loading: true
   });
 };
 
 const postCollectionsSuccess = (state, action) => {
   return updateObject(state, {
     loading: false,
-    add: {
-      status: true,
-      message: action.message
-    }
+    errors: {},
+    successMessage: action.message,
+    collections: [
+      ...state.collections,
+      action.collection
+    ]
   });
 };
 
 const postCollectionsFail = (state, action) => {
   return updateObject(state, {
     loading: false,
-    add: {
-      status: false,
-      message: action.message
-    }
+    errors: action.errors
   });
 };
 
 const deleteCollectionsStart = (state, action) => {
   return updateObject(state, {
-    loading: true,
-    delete: {
-      status: false,
-      message: null
-    }
+    loading: true
   });
 };
 
 const deleteCollectionsSuccess = (state, action) => {
   return updateObject(state, {
     loading: false,
-    delete: {
-      status: true,
-      message: action.message
-    }
+    successMessage: action.message
   });
 };
 
@@ -103,31 +91,25 @@ const deleteCollectionsFail = (state, action) => {
 
 const updateCollectionsStart = (state, action) => {
   return updateObject(state, {
-    loading: true,
-    update: {
-      status: false,
-      message: null
-    }
+    loading: true
   });
 };
 
 const updateCollectionsSuccess = (state, action) => {
   return updateObject(state, {
     loading: false,
-    update: {
-      status: true,
-      message: action.message
-    }
+    errors: {},
+    collections: [
+      action.collection
+    ],
+    successMessage: action.message
   });
 };
 
 const updateCollectionsFail = (state, action) => {
   return updateObject(state, {
     loading: false,
-    update: {
-      status: false,
-      message: action.message
-    }
+    errors: action.errors
   });
 };
 

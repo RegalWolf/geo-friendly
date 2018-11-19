@@ -16,23 +16,21 @@ import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import * as actions from '../../store/actions/index';
+import CollectionMessage from './CollectionsMessage';
 import AddCollections from './AddCollections/AddCollections';
 import AddCollectionsAlert from './AddCollections/AddCollectionsAlert';
-import AddCollectionsMessage from './AddCollections/AddCollectionsMessage';
 import UpdateCollections from './UpdateCollections/UpdateCollections';
 import UpdateCollectionsAlert from './UpdateCollections/UpdateCollectionsAlert';
-import UpdateCollectionsMessage from './UpdateCollections/UpdateCollectionsMessage';
 import DeleteCollections from './DeleteCollections/DeleteCollections';
-import DeleteCollectionsMessage from './DeleteCollections/DeleteCollectionsMessage';
 import Spinner from '../Spinner/Spinner';
 
 function createData(id, registration, inventory, code, name, synonym, amount, founder, 
   collector, location, coordinate, formation, determination, redetermination, type,
-  width, height, weight, high, environment, reference, description, photo, family_id, 
+  width, height, weight, high, environment, reference, description, family_id, 
   age_id, drawer_id, map_id, acquisition_id, user_id, taken_at, created_at, updated_at) {
   return { id, registration, inventory, code, name, synonym, amount, founder, 
     collector, location, coordinate, formation, determination, redetermination, type,
-    width, height, weight, high, environment, reference, description, photo, family_id, 
+    width, height, weight, high, environment, reference, description, family_id, 
     age_id, drawer_id, map_id, acquisition_id, user_id, taken_at, created_at, updated_at };
 }
 
@@ -83,7 +81,6 @@ const rows = [
   { id: 'environment', numeric: false, disablePadding: false, label: 'Environment' },
   { id: 'reference', numeric: false, disablePadding: false, label: 'Reference' },
   { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
-  { id: 'photo', numeric: false, disablePadding: false, label: 'Photo' },
   { id: 'family_id', numeric: false, disablePadding: false, label: 'Family_id' },
   { id: 'age_id', numeric: false, disablePadding: false, label: 'Age_id' },
   { id: 'drawer_id', numeric: false, disablePadding: false, label: 'Drawer_id' },
@@ -255,14 +252,15 @@ class Collections extends React.Component {
     drawers: [],
     maps: [],
     acquisitions: [],
+    errors: {},
+    successMessage: '',
+    message: {
+      open: false,
+      text: ''
+    },
     add: {
       open: false,
       openAlert: false,
-      message: {
-        open: false,
-        text: '',
-        status: false
-      },
       input: {
         registration: '', 
         inventory: '', 
@@ -285,7 +283,6 @@ class Collections extends React.Component {
         environment: '', 
         reference: '', 
         description: '', 
-        photo: '', 
         family_id: '', 
         age_id: '', 
         drawer_id: '', 
@@ -293,27 +290,11 @@ class Collections extends React.Component {
         acquisition_id: '', 
         user_id: '', 
         taken_at: ''
-      },
-      inputMessage: {
-        code: '',
-        name: '',
-        inventory: '',
-        registration: '',
-        age_id: '',
-        family_id: '',
-        drawer_id: '',
-        map_id: '',
-        acquisition_id: ''
       }
     },
     update: {
       open: false,
       openAlert: false,
-      message: {
-        open: false,
-        text: '',
-        status: false
-      },
       input: {
         registration: '', 
         inventory: '', 
@@ -336,7 +317,6 @@ class Collections extends React.Component {
         environment: '', 
         reference: '', 
         description: '', 
-        photo: '', 
         family_id: '', 
         age_id: '', 
         drawer_id: '', 
@@ -358,17 +338,11 @@ class Collections extends React.Component {
       }
     },
     delete: {
-      open: false,
-      message: {
-        open: false,
-        text: '',
-        status: false
-      }
+      open: false
     },
     page: 0,
     rowsPerPage: 10,
-    token: localStorage.getItem('token'),
-    loading: false
+    token: localStorage.getItem('token')
   };
 
   async componentDidMount() {
@@ -407,8 +381,7 @@ class Collections extends React.Component {
     if (this.state.collections !== this.props.collections) {
       this.setState({
         data: [],
-        collections: this.props.collections,
-        loading: this.props.loading
+        collections: this.props.collections
       });
       this.props.collections.map(collection => (
         this.setState(prevState => ({
@@ -419,13 +392,19 @@ class Collections extends React.Component {
               collection.collector, collection.location, collection.coordinate, collection.formation,
               collection.determination, collection.redetermination, collection.type,
               collection.width, collection.height, collection.weight, collection.high,
-              collection.environment, collection.reference, collection.description, collection.photo,
+              collection.environment, collection.reference, collection.description,
               collection.family_id, collection.age_id, collection.drawer_id, collection.map_id,
               collection.acquisition_id, collection.user_id, collection.taken_at, collection.created_at,
               collection.updated_at)
           ]
         }))
       ));
+    }
+
+    if (this.state.errors !== this.props.errors) {
+      this.setState(prevState => ({
+        errors: this.props.errors
+      }));
     }
 
     if (this.state.families !== this.props.families) {
@@ -509,6 +488,24 @@ class Collections extends React.Component {
     this.props.onFetchAcquisitions(this.state.token);
   }
 
+  closeMessageHandler = () => {
+    this.setState(prevState => ({
+      message: {
+        ...prevState.message,
+        open: false
+      }
+    }));
+  }
+
+  messageHandler = () => {
+    this.setState({
+      message: {
+        open: true,
+        text: this.props.successMessage
+      }
+    });
+  }
+
   // ------------------- Add Function ---------------------
   openAddHandler = () => {
     this.setState(prevState => ({
@@ -570,7 +567,6 @@ class Collections extends React.Component {
           environment: '', 
           reference: '', 
           description: '', 
-          photo: '', 
           family_id: '', 
           age_id: '', 
           drawer_id: '', 
@@ -582,131 +578,26 @@ class Collections extends React.Component {
     }));
   }
 
-  addValidationHandler = () => {
-    let code = '';
-    let name = '';
-    let inventory = '';
-    let registration = '';
-    let age_id = '';
-    let family_id = '';
-    let drawer_id = '';
-    let map_id = '';
-    let acquisition_id = '';
-
-    if (!this.state.add.input.code) {
-      code = 'code is required';
-    } else if (this.state.add.input.code.length < 4) {
-      code = 'The code must be at least 4 characters';
-    }
-
-    if (!this.state.add.input.name) {
-      name = 'name is required';
-    } else if (this.state.add.input.name.length < 4) {
-      name = 'The name must be at least 4 characters';
-    }
-
-    if (!this.state.add.input.inventory) {
-      inventory = 'inventory is required';
-    } else if (this.state.add.input.inventory.length < 4) {
-      inventory = 'The inventory must be at least 4 characters';
-    }
-
-    if (!this.state.add.input.registration) {
-      registration = 'registration is required';
-    } else if (this.state.add.input.registration.length < 4) {
-      registration = 'The registration must be at least 4 characters';
-    }
-
-    if (!this.state.add.input.family_id) {
-      family_id = 'family_id id is required';
-    }
-
-    if (!this.state.add.input.age_id) {
-      age_id = 'age_id id is required';
-    }
-
-    if (!this.state.add.input.drawer_id) {
-      drawer_id = 'drawer_id id is required';
-    }
-
-    if (!this.state.add.input.map_id) {
-      map_id = 'map_id id is required';
-    }
-
-    if (!this.state.add.input.acquisition_id) {
-      acquisition_id = 'acquisition_id id is required';
-    }
-
-    this.setState(prevState => ({
-      add: {
-        ...prevState.add,
-        inputMessage: {
-          code,
-          name,
-          inventory,
-          registration,
-          age_id,
-          family_id,
-          drawer_id,
-          map_id,
-          acquisition_id
-        }
-      }
-    }));
-  }
-
   toggleAddAlertHandler = async () => {
-    await this.addValidationHandler();
-
-    if ((!this.state.add.inputMessage.code) 
-      && (!this.state.add.inputMessage.name) 
-      && (!this.state.add.inputMessage.inventory) 
-      && (!this.state.add.inputMessage.registration) 
-      && (!this.state.add.inputMessage.family_id) 
-      && (!this.state.add.inputMessage.age_id) 
-      && (!this.state.add.inputMessage.drawer_id) 
-      && (!this.state.add.inputMessage.map_id) 
-      && (!this.state.add.inputMessage.acquisition_id)) {
-      this.setState(prevState => ({
-        add: {
-          ...prevState.add,
-          openAlert: !prevState.add.openAlert
-        }
-      }));
-    }
-  }
-
-  toggleMessageAddHandler = () => {
     this.setState(prevState => ({
       add: {
         ...prevState.add,
-        message: {
-          ...prevState.add.message,
-          open: !prevState.add.message.open
-        }
-      }
-    }));
-  }
-
-  messageAddHandler = () => {
-    this.setState(prevState => ({
-      add: {
-        ...prevState.add,
-        message: {
-          open: true,
-          text: this.props.add.message,
-          status: this.props.add.status
-        }
+        openAlert: !prevState.add.openAlert
       }
     }));
   }
 
   saveAddHandler = async () => {
     await this.props.onPost(this.state.add.input, this.state.token);
+
+    if (Object.keys(this.state.errors).length > 0) {
+      return this.toggleAddAlertHandler();
+    }
+
     this.toggleAddAlertHandler();
     this.closeAddHandler();
     this.resetInputAddHandler();
-    this.messageAddHandler()
+    this.messageHandler();
   }
 
   // ------------------- Update Function ---------------------
@@ -743,7 +634,6 @@ class Collections extends React.Component {
           environment: input[0].environment ? input[0].environment : '', 
           reference: input[0].reference ? input[0].reference : '', 
           description: input[0].description ? input[0].description : '', 
-          photo: input[0].photo ? input[0].photo : '', 
           family_id: input[0].family_id, 
           age_id: input[0].age_id, 
           drawer_id: input[0].drawer_id, 
@@ -791,7 +681,6 @@ class Collections extends React.Component {
           environment: '', 
           reference: '', 
           description: '', 
-          photo: '', 
           family_id: '', 
           age_id: '', 
           drawer_id: '', 
@@ -818,133 +707,28 @@ class Collections extends React.Component {
     }));
   }
 
-  updateValidationHandler = () => {
-    let code = '';
-    let name = '';
-    let inventory = '';
-    let registration = '';
-    let age_id = '';
-    let family_id = '';
-    let drawer_id = '';
-    let map_id = '';
-    let acquisition_id = '';
-
-    if (!this.state.update.input.code) {
-      code = 'code is required';
-    } else if (this.state.update.input.code.length < 4) {
-      code = 'The code must be at least 4 characters';
-    }
-
-    if (!this.state.update.input.name) {
-      name = 'name is required';
-    } else if (this.state.update.input.name.length < 4) {
-      name = 'The name must be at least 4 characters';
-    }
-
-    if (!this.state.update.input.inventory) {
-      inventory = 'inventory is required';
-    } else if (this.state.update.input.inventory.length < 4) {
-      inventory = 'The inventory must be at least 4 characters';
-    }
-
-    if (!this.state.update.input.registration) {
-      registration = 'registration is required';
-    } else if (this.state.update.input.registration.length < 4) {
-      registration = 'The registration must be at least 4 characters';
-    }
-
-    if (!this.state.update.input.family_id) {
-      family_id = 'family_id id is required';
-    }
-
-    if (!this.state.update.input.age_id) {
-      age_id = 'age_id id is required';
-    }
-
-    if (!this.state.update.input.drawer_id) {
-      drawer_id = 'drawer_id id is required';
-    }
-
-    if (!this.state.update.input.map_id) {
-      map_id = 'map_id id is required';
-    }
-
-    if (!this.state.update.input.acquisition_id) {
-      acquisition_id = 'acquisition_id id is required';
-    }
-
-    this.setState(prevState => ({
-      update: {
-        ...prevState.update,
-        inputMessage: {
-          code,
-          name,
-          inventory,
-          registration,
-          age_id,
-          family_id,
-          drawer_id,
-          map_id,
-          acquisition_id
-        }
-      }
-    }));
-  }
-
   toggleUpdateAlertHandler = async () => {
-    await this.updateValidationHandler();
-
-    if ((!this.state.update.inputMessage.code) 
-      && (!this.state.update.inputMessage.name) 
-      && (!this.state.update.inputMessage.inventory) 
-      && (!this.state.update.inputMessage.registration) 
-      && (!this.state.update.inputMessage.family_id) 
-      && (!this.state.update.inputMessage.age_id) 
-      && (!this.state.update.inputMessage.drawer_id) 
-      && (!this.state.update.inputMessage.map_id) 
-      && (!this.state.update.inputMessage.acquisition_id)) {
-      this.setState(prevState => ({
-        update: {
-          ...prevState.update,
-          openAlert: !prevState.update.openAlert
-        }
-      }));
-    }
-  }
-
-  toggleMessageUpdateHandler = () => {
     this.setState(prevState => ({
       update: {
         ...prevState.update,
-        message: {
-          ...prevState.update.message,
-          open: !prevState.update.message.open
-        }
-      }
-    }));
-  }
-
-  messageUpdateHandler = () => {
-    this.setState(prevState => ({
-      update: {
-        ...prevState.update,
-        message: {
-          open: true,
-          text: this.props.update.message,
-          status: this.props.update.status
-        }
+        openAlert: !prevState.update.openAlert
       }
     }));
   }
   
-  saveUpdateHandler = () => {
+  saveUpdateHandler = async () => {
     const id = this.state.selected[0] ? this.state.selected[0].toString() : '1';
 
-    this.props.onUpdate(id, this.state.token, this.state.update.input);
+    await this.props.onUpdate(id, this.state.token, this.state.update.input);
+
+    if (Object.keys(this.state.errors).length > 0) {
+      return this.toggleUpdateAlertHandler();
+    }
+    
     this.toggleUpdateAlertHandler();
     this.closeUpdateHandler();
     this.resetInputUpdateHandler();
-    this.messageUpdateHandler();
+    this.messageHandler();
   }
 
   // ------------------- Delete Function ---------------------
@@ -955,7 +739,7 @@ class Collections extends React.Component {
     await this.props.onDelete(id, this.state.token);
     this.toggleDeleteAlertHandler();
     this.unselectHandler();
-    this.messageDeleteHandler();
+    this.messageHandler();
   }
 
   toggleDeleteAlertHandler = () => {
@@ -967,31 +751,6 @@ class Collections extends React.Component {
     }));
   }
 
-  toggleMessageDeleteHandler = () => {
-    this.setState(prevState => ({
-      delete: {
-        ...prevState.delete,
-        message: {
-          ...prevState.delete.message,
-          open: !prevState.delete.message.open
-        }
-      }
-    }));
-  }
-
-  messageDeleteHandler = () => {
-    this.setState(prevState => ({
-      delete: {
-        ...prevState.delete,
-        message: {
-          open: true,
-          text: this.props.delete.message,
-          status: this.props.delete.status
-        }
-      }
-    }));
-  }
-
   render() {
     const { classes } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
@@ -999,11 +758,10 @@ class Collections extends React.Component {
 
     return (
       <React.Fragment>
-        {this.state.add.message.open
-          ? <AddCollectionsMessage 
-              closed={this.toggleMessageAddHandler} 
-              message={this.state.add.message.text}
-              status={this.state.add.message.status}
+        {this.state.message.open
+          ? <CollectionMessage 
+              closed={this.closeMessageHandler} 
+              message={this.state.message.text}
             />
           : null
         }
@@ -1012,7 +770,7 @@ class Collections extends React.Component {
           ? <AddCollections 
               closeAddHandler={this.closeAddHandler}
               input={this.state.add.input}
-              inputMessage={this.state.add.inputMessage}
+              errors={ {...this.state.errors} }
               changed={this.inputAddHandler} 
               onToggleAlert={this.toggleAddAlertHandler}
               ages={this.state.ages}
@@ -1027,22 +785,14 @@ class Collections extends React.Component {
         <AddCollectionsAlert
           open={this.state.add.openAlert}
           onToggleAlert={this.toggleAddAlertHandler}
-          added={this.saveAddHandler} />
-
-        {this.state.update.message.open
-          ? <UpdateCollectionsMessage 
-              closed={this.toggleMessageUpdateHandler} 
-              message={this.state.update.message.text}
-              status={this.state.update.message.status}
-            />
-          : null
-        }
+          added={this.saveAddHandler}
+          loading={this.props.loading} />
 
         {this.state.update.open 
           ? <UpdateCollections 
               closed={this.closeUpdateHandler}
               input={this.state.update.input}
-              inputMessage={this.state.update.inputMessage}
+              errors={ {...this.state.errors} }
               changed={this.inputUpdateHandler} 
               onToggleAlert={this.toggleUpdateAlertHandler}
               ages={this.state.ages}
@@ -1057,21 +807,14 @@ class Collections extends React.Component {
         <UpdateCollectionsAlert
           open={this.state.update.openAlert}
           onToggleAlert={this.toggleUpdateAlertHandler}
-          updated={this.saveUpdateHandler} />
-
-        {this.state.delete.message.open
-          ? <DeleteCollectionsMessage 
-              closed={this.toggleMessageDeleteHandler} 
-              message={this.state.delete.message.text}
-              status={this.state.delete.message.status}
-            />
-          : null
-        }
+          updated={this.saveUpdateHandler}
+          loading={this.props.loading} />
 
         <DeleteCollections 
           open={this.state.delete.open}
           onToggleAlert={this.toggleDeleteAlertHandler}
-          deleted={this.deleteHandler} />
+          deleted={this.deleteHandler}
+          loading={this.props.loading} />
 
         <Paper className={classes.root}>
           <EnhancedTableToolbar 
@@ -1200,10 +943,6 @@ class Collections extends React.Component {
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="default">
-                          {n.photo}
-                        </TableCell>
-
-                        <TableCell component="th" scope="row" padding="default">
                           {n.family_id}
                         </TableCell>
 
@@ -1277,17 +1016,16 @@ Collections.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    user_id: state.authReducer.user_id,
     collections: state.collectionsReducer.collections,
+    errors: state.collectionsReducer.errors,
+    successMessage: state.collectionsReducer.successMessage,
+    loading: state.collectionsReducer.loading,
+    user_id: state.authReducer.user_id,
     ages: state.agesReducer.ages,
     maps: state.mapsReducer.maps,
     families: state.familiesReducer.families,
     acquisitions: state.acquisitionsReducer.acquisitions,
-    drawers: state.drawersReducer.drawers,
-    add: state.collectionsReducer.add,
-    update: state.collectionsReducer.update,
-    delete: state.collectionsReducer.delete,
-    loading: state.collectionsReducer.loading
+    drawers: state.drawersReducer.drawers
   };
 };
 

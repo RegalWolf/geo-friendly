@@ -1,5 +1,4 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { memo } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -41,10 +40,4 @@ const addCollectionsAlert = props => (
   </Dialog>
 );
 
-const mapStateToProps = state => {
-  return {
-    loading: state.collectionsReducer.loading
-  };
-};
-
-export default connect(mapStateToProps)(addCollectionsAlert);
+export default memo(addCollectionsAlert);

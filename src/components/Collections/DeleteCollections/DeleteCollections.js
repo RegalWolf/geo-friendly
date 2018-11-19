@@ -1,5 +1,4 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { memo } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -40,10 +39,4 @@ const deleteCollections = props => (
   </Dialog>
 );
 
-const mapStateToProps = state => {
-  return {
-    loading: state.collectionsReducer.loading
-  };
-};
-
-export default connect(mapStateToProps)(deleteCollections);
+export default memo(deleteCollections);

@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { Paper, IconButton, Icon, Typography } from '@material-ui/core';
 
-import WarningIcon from '@material-ui/icons/Warning';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CloseIcon from '@material-ui/icons/Close';
 
-const updateDrawersMessage = props => (
-  <Paper style={props.status ? styles.success : styles.warning}>
+const collectionMessage = props => (
+  <Paper style={styles.success}>
     <div style={styles.message}>
       <Icon style={styles.icon}>
-        {props.status ? <CheckCircleIcon /> : <WarningIcon />}
+        <CheckCircleIcon />}
       </Icon>
       <Typography color='inherit' style={styles.messageText}>
         {props.message}
@@ -32,15 +31,6 @@ const styles = {
     color: '#fff',
     marginBottom: '1.5rem',
   },
-  warning: {
-    background: 'orangered',
-    padding: '.25rem .5rem .25rem 1.5rem',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    color: '#fff',
-    marginBottom: '1.5rem',
-  },
   message: {
     display: 'flex',
     alignItems: 'center',
@@ -53,4 +43,4 @@ const styles = {
   }
 }
 
-export default updateDrawersMessage;
+export default memo(collectionMessage);

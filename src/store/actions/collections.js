@@ -14,10 +14,10 @@ export const fetchCollectionsSuccess = collections => {
   };
 };
 
-export const fetchCollectionsFail = error => {
+export const fetchCollectionsFail = errors => {
   return {
     type: actionTypes.FETCH_COLLECTIONS_FAIL,
-    error
+    errors
   };
 };
 
@@ -42,39 +42,31 @@ export const postCollectionsStart = () => {
   };
 };
 
-export const postCollectionsSuccess = message => {
+export const postCollectionsSuccess = (collection, message) => {
   return {
     type: actionTypes.POST_COLLECTIONS_SUCCESS,
-    message
+    message,
+    collection
   };
 };
 
-export const postCollectionsFail = message => {
+export const postCollectionsFail = errors => {
   return {
     type: actionTypes.POST_COLLECTIONS_FAIL,
-    message
+    errors
   };
 };
 
 export const postCollections = (collection, token) => {
   return async dispatch => {
-    console.log(collection);
     dispatch(postCollectionsStart());
     const url = `https://g3ofriendly.gurisa.com/api/v1/collections?token=${token}`;
     await axios.post(url, collection)
-      .then(async response => {
-        console.log('response');
-        console.log(response);
-        if (response.data.status) {
-          await dispatch(postCollectionsSuccess(response.data.message));
-          dispatch(fetchCollections(token));
-        } else {
-          dispatch(postCollectionsFail(response.data.message));
-        }
+      .then(response => {
+        dispatch(postCollectionsSuccess(response.data.data, response.data.message));
       })
       .catch(err => {
-        console.log('err');
-        console.log(err);
+        dispatch(postCollectionsFail(err.response.data));
       });
   }
 };
@@ -121,17 +113,18 @@ export const updateCollectionsStart = () => {
   };
 };
 
-export const updateCollectionsSuccess = message => {
+export const updateCollectionsSuccess = (collection, message) => {
   return {
     type: actionTypes.UPDATE_COLLECTIONS_SUCCESS,
+    collection,
     message,
   };
 };
 
-export const updateCollectionsFail = message => {
+export const updateCollectionsFail = errors => {
   return {
     type: actionTypes.UPDATE_COLLECTIONS_FAIL,
-    message
+    errors
   };
 };
 

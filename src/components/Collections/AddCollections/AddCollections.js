@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { 
   Typography, Button, TextField, Tooltip, Paper, IconButton,
@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 
 import CloseItem from '@material-ui/icons/Close';
-import classes from './AddCollections.module.scss';
+import classes from '../FormInput.module.scss';
 
 const addCollections = props => (
   <Paper style={styles.container}>
@@ -32,8 +32,8 @@ const addCollections = props => (
             shrink: true,
           }}
         />
-        {props.inputMessage.code 
-          ? <FormHelperText>{props.inputMessage.code}</FormHelperText>
+        {props.errors.code 
+          ? <FormHelperText>{props.errors.code}</FormHelperText>
           : null
         }
       </FormControl>
@@ -48,8 +48,8 @@ const addCollections = props => (
             shrink: true,
           }}
         />
-        {props.inputMessage.name 
-          ? <FormHelperText>{props.inputMessage.name}</FormHelperText>
+        {props.errors.name 
+          ? <FormHelperText>{props.errors.name}</FormHelperText>
           : null
         }
       </FormControl>
@@ -64,8 +64,8 @@ const addCollections = props => (
             shrink: true,
           }}
         />
-        {props.inputMessage.inventory 
-          ? <FormHelperText>{props.inputMessage.inventory}</FormHelperText>
+        {props.errors.inventory 
+          ? <FormHelperText>{props.errors.inventory}</FormHelperText>
           : null
         }
       </FormControl>
@@ -80,12 +80,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
-        {props.inputMessage.registration 
-          ? <FormHelperText>{props.inputMessage.registration}</FormHelperText>
+        {props.errors.registration 
+          ? <FormHelperText>{props.errors.registration}</FormHelperText>
           : null
         }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="synonym"
           label="synonym"
@@ -97,7 +97,11 @@ const addCollections = props => (
           }}
         />
       </FormControl>
-      <FormControl className={classes.textField2}>
+      {props.errors.synonym 
+          ? <FormHelperText>{props.errors.synonym}</FormHelperText>
+          : null
+        }
+      <FormControl error className={classes.textField2}>
         <TextField
           id="amount"
           label="amount"
@@ -108,8 +112,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.amount 
+          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.errors.amount}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="founder"
           label="founder"
@@ -120,8 +128,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.founder 
+          ? <FormHelperText>{props.errors.founder}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="collector"
           label="collector"
@@ -132,8 +144,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.collector 
+          ? <FormHelperText>{props.errors.collector}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="location"
           label="location"
@@ -144,8 +160,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.location 
+          ? <FormHelperText>{props.errors.location}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="coordinate"
           label="coordinate"
@@ -156,8 +176,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.coordinate 
+          ? <FormHelperText>{props.errors.coordinate}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="formation"
           label="formation"
@@ -168,8 +192,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.formation 
+          ? <FormHelperText>{props.errors.formation}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="determination"
           label="determination"
@@ -180,8 +208,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.determination 
+          ? <FormHelperText>{props.errors.determination}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="redetermination"
           label="redetermination"
@@ -192,8 +224,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.redetermination 
+          ? <FormHelperText>{props.errors.redetermination}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="type"
           label="type"
@@ -204,8 +240,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.type 
+          ? <FormHelperText>{props.errors.type}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="width"
           label="width"
@@ -216,8 +256,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.width 
+          ? <FormHelperText>{props.errors.width}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="height"
           label="height"
@@ -228,8 +272,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.height 
+          ? <FormHelperText>{props.errors.height}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="weight"
           label="weight"
@@ -240,8 +288,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.weight 
+          ? <FormHelperText>{props.errors.weight}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="high"
           label="high"
@@ -252,8 +304,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.high 
+          ? <FormHelperText>{props.errors.high}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="environment"
           label="environment"
@@ -264,8 +320,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.environment 
+          ? <FormHelperText>{props.errors.environment}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="reference"
           label="reference"
@@ -276,8 +336,12 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.reference 
+          ? <FormHelperText>{props.errors.reference}</FormHelperText>
+          : null
+        }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="description"
           label="description"
@@ -288,18 +352,10 @@ const addCollections = props => (
             shrink: true,
           }}
         />
-      </FormControl>
-      <FormControl className={classes.textField2}>
-        <TextField
-          id="photo"
-          label="photo"
-          value={props.input.photo}
-          onChange={props.changed('photo')}
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
+        {props.errors.description 
+          ? <FormHelperText>{props.errors.description}</FormHelperText>
+          : null
+        }
       </FormControl>
       <FormControl className={classes.textField2}>
         <Typography variant='caption' className={classes.textField2__caption}>Age Id</Typography>
@@ -313,8 +369,8 @@ const addCollections = props => (
             <MenuItem key={age.id} value={age.id}>{age.name}</MenuItem>
           ))}
         </Select>
-        {props.inputMessage.age_id 
-          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.inputMessage.age_id}</FormHelperText>
+        {props.errors.age_id 
+          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.errors.age_id}</FormHelperText>
           : null
         }
       </FormControl>
@@ -330,8 +386,8 @@ const addCollections = props => (
             <MenuItem key={family.id} value={family.id}>{family.name}</MenuItem>
           ))}
         </Select>
-        {props.inputMessage.family_id 
-          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.inputMessage.family_id}</FormHelperText>
+        {props.errors.family_id 
+          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.errors.family_id}</FormHelperText>
           : null
         }
       </FormControl>
@@ -347,8 +403,8 @@ const addCollections = props => (
             <MenuItem key={drawer.id} value={drawer.id}>{drawer.name}</MenuItem>
           ))}
         </Select>
-        {props.inputMessage.drawer_id 
-          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.inputMessage.drawer_id}</FormHelperText>
+        {props.errors.drawer_id 
+          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.errors.drawer_id}</FormHelperText>
           : null
         }
       </FormControl>
@@ -364,8 +420,8 @@ const addCollections = props => (
             <MenuItem key={map.id} value={map.id}>{map.name}</MenuItem>
           ))}
         </Select>
-        {props.inputMessage.map_id 
-          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.inputMessage.map_id}</FormHelperText>
+        {props.errors.map_id 
+          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.errors.map_id}</FormHelperText>
           : null
         }
       </FormControl>
@@ -381,12 +437,12 @@ const addCollections = props => (
             <MenuItem key={acquisition.id} value={acquisition.id}>{acquisition.name}</MenuItem>
           ))}
         </Select>
-        {props.inputMessage.acquisition_id 
-          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.inputMessage.acquisition_id}</FormHelperText>
+        {props.errors.acquisition_id 
+          ? <FormHelperText error style={{marginTop: '1rem'}}>{props.errors.acquisition_id}</FormHelperText>
           : null
         }
       </FormControl>
-      <FormControl className={classes.textField2}>
+      <FormControl error className={classes.textField2}>
         <TextField
           id="taken_at"
           label="taken_at"
@@ -398,6 +454,10 @@ const addCollections = props => (
             shrink: true,
           }}
         />
+        {props.errors.taken_at 
+          ? <FormHelperText>{props.errors.taken_at}</FormHelperText>
+          : null
+        }
       </FormControl>
     </div>
     <div style={styles.contentNavigation}>
@@ -431,4 +491,4 @@ const styles = {
   }
 };
 
-export default addCollections;
+export default memo(addCollections);
