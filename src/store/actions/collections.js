@@ -134,12 +134,12 @@ export const updateCollections = (id, token, collection) => {
     const url = `https://g3ofriendly.gurisa.com/api/v1/collections/${id}?token=${token}`;
     await axios.patch(url, collection)
       .then(async response => {
-        if (response.data.status) {
-          await dispatch(updateCollectionsSuccess(response.data.message));
-          dispatch(fetchCollections(token));
-        } else {
-          dispatch(updateCollectionsFail(response.data.message));
-        }
+        console.log(response);
+        await dispatch(updateCollectionsSuccess(response.data.data, response.data.message));
+        dispatch(fetchCollections(token));
+      })
+      .catch(err => {
+        dispatch(updateCollectionsFail(err.response.data));
       });
   };
 };

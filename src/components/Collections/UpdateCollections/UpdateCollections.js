@@ -14,7 +14,7 @@ const updateCollections = props => (
       <Typography variant='h6'>
         Update Collections
       </Typography>
-      <Tooltip title='close' onClick={props.closeAddHandler}>
+      <Tooltip title='close' onClick={props.closeUpdateHandler}>
         <IconButton aria-label='close'>
           <CloseItem />
         </IconButton>
@@ -294,18 +294,6 @@ const updateCollections = props => (
         />
       </FormControl>
       <FormControl className={classes.textField2}>
-        <TextField
-          id="photo"
-          label="photo"
-          value={props.input.photo}
-          onChange={props.changed('photo')}
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      </FormControl>
-      <FormControl className={classes.textField2}>
         <Typography variant='caption' className={classes.textField2__caption}>Age Id</Typography>
         <Select
           value={props.input.age_id}
@@ -405,7 +393,7 @@ const updateCollections = props => (
       </FormControl>
     </div>
     <div style={styles.contentNavigation}>
-      <Button onClick={props.closeAddHandler}>
+      <Button onClick={props.closeUpdateHandler}>
         Cancel
       </Button>
       <Button onClick={props.onToggleAlert}>

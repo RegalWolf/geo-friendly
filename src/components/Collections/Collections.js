@@ -721,6 +721,8 @@ class Collections extends React.Component {
 
     await this.props.onUpdate(id, this.state.token, this.state.update.input);
 
+    console.log(this.state.errors);
+
     if (Object.keys(this.state.errors).length > 0) {
       return this.toggleUpdateAlertHandler();
     }
@@ -790,7 +792,7 @@ class Collections extends React.Component {
 
         {this.state.update.open 
           ? <UpdateCollections 
-              closed={this.closeUpdateHandler}
+              closeUpdateHandler={this.closeUpdateHandler}
               input={this.state.update.input}
               errors={ {...this.state.errors} }
               changed={this.inputUpdateHandler} 
